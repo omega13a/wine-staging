@@ -38,11 +38,10 @@ diff --git a/dlls/ntdll/loader.c b/dlls/ntdll/loader.c
 index b405bb4e158..187e5a9b57a 100644
 --- a/dlls/ntdll/loader.c
 +++ b/dlls/ntdll/loader.c
-@@ -3211,6 +3211,37 @@ static void start_process( void *arg )
-     call_thread_entry_point( kernel32_start_process, arg );
+@@ -3104,6 +3237,35 @@ static void load_global_options(void)
+     NtClose( hkey );
  }
  
-+
 +/***********************************************************************
 + *           user_shared_data_init
 + *
@@ -72,10 +71,9 @@ index b405bb4e158..187e5a9b57a 100644
 +    NtProtectVirtualMemory( NtCurrentProcess(), &addr, &data_size, PAGE_NOACCESS, &old_prot );
 +}
 +
-+
+ 
  /******************************************************************
   *		LdrInitializeThunk (NTDLL.@)
-  *
 @@ -3243,6 +3274,7 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
          peb->ProcessParameters->WindowTitle = wm->ldr.FullDllName;
      version_init( wm->ldr.FullDllName.Buffer );
@@ -110,9 +108,9 @@ index c42d81c7f89..81c11658a49 100644
  #include "ntdll_misc.h"
  #include "ddk/wdm.h"
  #include "wine/exception.h"
-@@ -50,7 +51,9 @@
- WINE_DEFAULT_DEBUG_CHANNEL(thread);
- WINE_DECLARE_DEBUG_CHANNEL(relay);
+@@ -52,7 +54,9 @@ WINE_DEFAULT_DEBUG_CHANNEL(thread);
+ #define PTHREAD_STACK_MIN 16384
+ #endif
  
 -struct _KUSER_SHARED_DATA *user_shared_data = NULL;
 +static struct _KUSER_SHARED_DATA user_shared_data_internal;
@@ -120,7 +118,7 @@ index c42d81c7f89..81c11658a49 100644
 +struct _KUSER_SHARED_DATA *user_shared_data = &user_shared_data_internal;
  
  PUNHANDLED_EXCEPTION_FILTER unhandled_exception_filter = NULL;
- LPTHREAD_START_ROUTINE kernel32_start_process = NULL;
+ void (WINAPI *kernel32_start_process)(LPTHREAD_START_ROUTINE,void*) = NULL;
 @@ -354,18 +357,71 @@ static ULONG_PTR get_image_addr(void)
   */
  BYTE* CDECL __wine_user_shared_data(void)
