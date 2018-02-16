@@ -13,20 +13,18 @@ diff --git a/dlls/ntdll/loader.c b/dlls/ntdll/loader.c
 index 77a16b3e3b..3e450d4acb 100644
 --- a/dlls/ntdll/loader.c
 +++ b/dlls/ntdll/loader.c
-@@ -63,9 +63,13 @@ WINE_DECLARE_DEBUG_CHANNEL(imports);
+@@ -62,8 +62,11 @@ WINE_DECLARE_DEBUG_CHANNEL(imports);
+ 
  typedef DWORD (CALLBACK *DLLENTRYPROC)(HMODULE,DWORD,LPVOID);
  typedef void  (CALLBACK *LDRENUMPROC)(LDR_MODULE *, void *, BOOLEAN *);
- 
 +#define IS_OPTION_TRUE(ch) ((ch) == 'y' || (ch) == 'Y' || (ch) == 't' || (ch) == 'T' || (ch) == '1')
-+
-+
+ 
 +static BOOL hide_wine_exports = FALSE;  /* try to hide ntdll wine exports from applications */
  static BOOL imports_fixup_done = FALSE;  /* set once the imports have been fixed up, before attaching them */
+ static BOOL process_attaching = TRUE;   /* set on process attach to avoid calling callbacks too early */
  static BOOL process_detaching = FALSE;  /* set on process detach to avoid deadlocks with thread detach */
  static int free_lib_count;   /* recursion depth of LdrUnloadDll calls */
  
- static const char * const reason_names[] =
- {
 @@ -1435,6 +1439,96 @@ NTSTATUS WINAPI LdrUnlockLoaderLock( ULONG flags, ULONG_PTR magic )
  }
  
