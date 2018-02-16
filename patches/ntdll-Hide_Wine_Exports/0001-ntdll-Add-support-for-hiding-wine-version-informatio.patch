@@ -10,23 +10,24 @@ Subject: ntdll: Add support for hiding wine version information from
  2 files changed, 100 insertions(+), 1 deletion(-)
 
 diff --git a/dlls/ntdll/loader.c b/dlls/ntdll/loader.c
-index 94668e8ba4..f4e002a060 100644
+index 77a16b3e3b..3e450d4acb 100644
 --- a/dlls/ntdll/loader.c
 +++ b/dlls/ntdll/loader.c
-@@ -64,9 +64,12 @@ WINE_DECLARE_DEBUG_CHANNEL(pid);
+@@ -63,9 +63,13 @@ WINE_DECLARE_DEBUG_CHANNEL(imports);
  typedef DWORD (CALLBACK *DLLENTRYPROC)(HMODULE,DWORD,LPVOID);
  typedef void  (CALLBACK *LDRENUMPROC)(LDR_MODULE *, void *, BOOLEAN *);
  
 +#define IS_OPTION_TRUE(ch) ((ch) == 'y' || (ch) == 'Y' || (ch) == 't' || (ch) == 'T' || (ch) == '1')
 +
- static BOOL process_attaching = TRUE;   /* set on process attach to avoid calling callbacks too early */
++
+ static BOOL imports_fixup_done = FALSE;  /* set once the imports have been fixed up, before attaching them */
  static BOOL process_detaching = FALSE;  /* set on process detach to avoid deadlocks with thread detach */
  static int free_lib_count;   /* recursion depth of LdrUnloadDll calls */
 +static BOOL hide_wine_exports = FALSE;  /* try to hide ntdll wine exports from applications */
  
  static const char * const reason_names[] =
  {
-@@ -1485,6 +1488,96 @@ NTSTATUS WINAPI LdrUnlockLoaderLock( ULONG flags, ULONG_PTR magic )
+@@ -1435,6 +1439,96 @@ NTSTATUS WINAPI LdrUnlockLoaderLock( ULONG flags, ULONG_PTR magic )
  }
  
  
@@ -123,7 +124,7 @@ index 94668e8ba4..f4e002a060 100644
  /******************************************************************
   *		LdrGetProcedureAddress  (NTDLL.@)
   */
-@@ -1505,7 +1598,7 @@ NTSTATUS WINAPI LdrGetProcedureAddress(HMODULE module, const ANSI_STRING *name,
+@@ -1455,7 +1549,7 @@ NTSTATUS WINAPI LdrGetProcedureAddress(HMODULE module, const ANSI_STRING *name,
          LPCWSTR load_path = NtCurrentTeb()->Peb->ProcessParameters->DllPath.Buffer;
          void *proc = name ? find_named_export( module, exports, exp_size, name->Buffer, -1, load_path )
                            : find_ordinal_export( module, exports, exp_size, ord - exports->Base, load_path );
@@ -132,7 +133,7 @@ index 94668e8ba4..f4e002a060 100644
          {
              *address = proc;
              ret = STATUS_SUCCESS;
-@@ -3128,6 +3221,7 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
+@@ -3134,6 +3228,7 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
      if (!peb->ProcessParameters->WindowTitle.Buffer)
          peb->ProcessParameters->WindowTitle = wm->ldr.FullDllName;
      version_init( wm->ldr.FullDllName.Buffer );
