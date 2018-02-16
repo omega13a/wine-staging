@@ -20,10 +20,10 @@ index 77a16b3e3b..3e450d4acb 100644
 +#define IS_OPTION_TRUE(ch) ((ch) == 'y' || (ch) == 'Y' || (ch) == 't' || (ch) == 'T' || (ch) == '1')
 +
 +
++static BOOL hide_wine_exports = FALSE;  /* try to hide ntdll wine exports from applications */
  static BOOL imports_fixup_done = FALSE;  /* set once the imports have been fixed up, before attaching them */
  static BOOL process_detaching = FALSE;  /* set on process detach to avoid deadlocks with thread detach */
  static int free_lib_count;   /* recursion depth of LdrUnloadDll calls */
-+static BOOL hide_wine_exports = FALSE;  /* try to hide ntdll wine exports from applications */
  
  static const char * const reason_names[] =
  {
