@@ -16,15 +16,6 @@ diff --git a/dlls/kernel32/cpu.c b/dlls/kernel32/cpu.c
 index 2e0e79f8e8d..d53488c7652 100644
 --- a/dlls/kernel32/cpu.c
 +++ b/dlls/kernel32/cpu.c
-@@ -46,7 +46,7 @@
- 
- WINE_DEFAULT_DEBUG_CHANNEL(reg);
- 
--#define SHARED_DATA     ((KSHARED_USER_DATA*)0x7ffe0000)
-+extern KSHARED_USER_DATA* CDECL __wine_user_shared_data(void);
- 
- /****************************************************************************
-  *		QueryPerformanceCounter (KERNEL32.@)
 @@ -206,7 +206,7 @@ BOOL WINAPI IsProcessorFeaturePresent (
  	DWORD feature	/* [in] Feature number, (PF_ constants from "winnt.h") */) 
  {
