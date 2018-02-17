@@ -14,10 +14,6 @@ Subject: wined3d: Implement generation of mip maps for shader resource views.
  include/wine/wined3d.h         |  1 +
  8 files changed, 119 insertions(+), 9 deletions(-)
 
-diff --git a/dlls/d3d11/device.c b/dlls/d3d11/device.c
-index f71d4a3e910..bbdc97868db 100644
---- a/dlls/d3d11/device.c
-+++ b/dlls/d3d11/device.c
 diff --git a/dlls/d3d11/tests/d3d11.c b/dlls/d3d11/tests/d3d11.c
 index 154771f4240..8906b9efa7a 100644
 --- a/dlls/d3d11/tests/d3d11.c
