@@ -113,28 +113,24 @@ index 7ce6cd9..d972922 100644
          case FCIDM_SHVIEW_PROPERTIES:
              TRACE("Verb FCIDM_SHVIEW_PROPERTIES\n");
              DoOpenProperties(This, lpcmi->hwnd);
-@@ -510,6 +542,10 @@ static HRESULT WINAPI ItemMenu_GetCommandString(
-                 strcpy(lpszName, "copy");
-                 hr = S_OK;
-                 break;
-+            case FCIDM_SHVIEW_INSERT:
-+                strcpy(lpszName, "paste");
-+                hr = S_OK;
-+                break;
-             case FCIDM_SHVIEW_CREATELINK:
-                 strcpy(lpszName, "link");
-                 hr = S_OK;
-@@ -550,6 +586,10 @@ static HRESULT WINAPI ItemMenu_GetCommandString(
-                 MultiByteToWideChar(CP_ACP, 0, "copy", -1, (LPWSTR)lpszName, uMaxNameLen);
-                 hr = S_OK;
-                 break;
-+            case FCIDM_SHVIEW_INSERT:
-+                MultiByteToWideChar(CP_ACP, 0, "paste", -1, (LPWSTR)lpszName, uMaxNameLen);
-+                hr = S_OK;
-+                break;
-             case FCIDM_SHVIEW_CREATELINK:
-                 MultiByteToWideChar(CP_ACP, 0, "link", -1, (LPWSTR)lpszName, uMaxNameLen);
-                 hr = S_OK;
+@@ -478,6 +1176,7 @@ static HRESULT WINAPI ItemMenu_GetCommandString(IContextMenu3 *iface, UINT_PTR c
+     static const WCHAR exploreW[] = {'e','x','p','l','o','r','e',0};
+     static const WCHAR cutW[] = {'c','u','t',0};
+     static const WCHAR copyW[] = {'c','o','p','y',0};
++    static const WCHAR pasteW[] = {'p','a','s','t','e',0};
+     static const WCHAR linkW[] = {'l','i','n','k',0};
+     static const WCHAR deleteW[] = {'d','e','l','e','t','e',0};
+     static const WCHAR propertiesW[] = {'p','r','o','p','e','r','t','i','e','s',0};
+@@ -511,6 +1210,9 @@ static HRESULT WINAPI ItemMenu_GetCommandString(IContextMenu3 *iface, UINT_PTR c
+         case FCIDM_SHVIEW_COPY:
+             cmdW = copyW;
+             break;
++        case FCIDM_SHVIEW_INSERT:
++            cmdW = pasteW;
++            break;
+         case FCIDM_SHVIEW_CREATELINK:
+             cmdW = linkW;
+             break;
 @@ -757,8 +797,22 @@ static BOOL DoPaste(ContextMenu *This)
  	    if (psfFrom)
  	    {
