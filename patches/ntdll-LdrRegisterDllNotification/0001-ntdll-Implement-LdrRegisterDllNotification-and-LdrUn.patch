@@ -171,14 +171,6 @@ index 15ed31452e1..de2800c260a 100644
   *		LdrLockLoaderLock  (NTDLL.@)
   *
   * Note: some flags are not implemented.
-@@ -2171,6 +2270,7 @@ static NTSTATUS load_native_dll( LPCWSTR load_path, LPCWSTR name, LPCWSTR fakemo
-     TRACE_(loaddll)( "Loaded %s at %p: native\n", debugstr_w(wm->ldr.FullDllName.Buffer), module );
- 
-     wm->ldr.LoadCount = 1;
-+
-     *pwm = wm;
-     status = STATUS_SUCCESS;
- done:
 diff --git a/dlls/ntdll/ntdll.spec b/dlls/ntdll/ntdll.spec
 index 4511e8efd26..42f26298dce 100644
 --- a/dlls/ntdll/ntdll.spec
@@ -222,9 +214,11 @@ index 4700f4ac54a..93415ee5da0 100644
  static ULONG src_aligned_block[4];
  static ULONG dest_aligned_block[32];
  static const char *src = (const char*)src_aligned_block;
-@@ -156,6 +156,8 @@ static void InitFunctionPtrs(void)
+@@ -155,7 +155,10 @@ static void InitFunctionPtrs(void)
+         pRtlIsCriticalSectionLockedByThread = (void *)GetProcAddress(hntdll, "RtlIsCriticalSectionLockedByThread");
          pRtlInitializeCriticalSectionEx = (void *)GetProcAddress(hntdll, "RtlInitializeCriticalSectionEx");
          pLdrEnumerateLoadedModules = (void *)GetProcAddress(hntdll, "LdrEnumerateLoadedModules");
++        pRtlQueryPackageIdentity = (void *)GetProcAddress(hntdll, "RtlQueryPackageIdentity");
          pRtlMakeSelfRelativeSD = (void *)GetProcAddress(hntdll, "RtlMakeSelfRelativeSD");
 +        pLdrRegisterDllNotification = (void *)GetProcAddress(hntdll, "LdrRegisterDllNotification");
 +        pLdrUnregisterDllNotification = (void *)GetProcAddress(hntdll, "LdrUnregisterDllNotification");
