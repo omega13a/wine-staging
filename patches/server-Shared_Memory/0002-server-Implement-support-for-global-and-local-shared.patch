@@ -117,14 +117,15 @@ diff --git a/dlls/ntdll/thread.c b/dlls/ntdll/thread.c
 index 9a02b8d3da..63a9c4f90b 100644
 --- a/dlls/ntdll/thread.c
 +++ b/dlls/ntdll/thread.c
-@@ -380,6 +380,7 @@ void terminate_thread( int status )
- void exit_thread( int status )
+@@ -459,6 +622,8 @@ void exit_thread( int status )
+ void WINAPI RtlExitUserThread( ULONG status )
  {
      static void *prev_teb;
 +    shmlocal_t *shmlocal;
-     sigset_t sigset;
++    sigset_t sigset;
      TEB *teb;
  
+     if (status)  /* send the exit code to the server (0 is already the default) */
 @@ -403,6 +404,9 @@ void exit_thread( int status )
      LdrShutdownThread();
      RtlFreeThreadActivationContextStack();
@@ -161,15 +162,15 @@ diff --git a/include/winternl.h b/include/winternl.h
 index 5cd1664f1f..52bf022cdb 100644
 --- a/include/winternl.h
 +++ b/include/winternl.h
-@@ -366,7 +366,7 @@ typedef struct _TEB
+@@ -394,7 +395,7 @@ typedef struct _TEB
      PVOID                        Spare4;                            /* f7c/1750 */
      PVOID                        ReservedForOle;                    /* f80/1758 */
      ULONG                        WaitingOnLoaderLock;               /* f84/1760 */
 -    PVOID                        Reserved5[3];                      /* f88/1768 */
 +    PVOID                        Reserved5[3];                      /* f88/1768 used for x86_64 OSX and wineserver shared memory */
      PVOID                       *TlsExpansionSlots;                 /* f94/1780 */
-     ULONG                        ImpersonationLocale;               /* f98/1788 */
-     ULONG                        IsImpersonating;                   /* f9c/178c */
+ #ifdef _WIN64
+     PVOID                        DeallocationBStore;                /*    /1788 */
 diff --git a/server/fd.c b/server/fd.c
 index 3c8f1bd6c3..5f7519866c 100644
 --- a/server/fd.c
