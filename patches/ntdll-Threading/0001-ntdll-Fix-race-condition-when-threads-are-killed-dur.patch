@@ -29,7 +29,7 @@ index 3696c8e..74e64c9 100644
      TEB *teb;
  
      if (status)  /* send the exit code to the server (0 is already the default) */
-@@ -383,7 +384,7 @@ void exit_thread( int status )
+@@ -472,7 +630,7 @@ void WINAPI RtlExitUserThread( ULONG status )
          SERVER_END_REQ;
      }
  
@@ -37,11 +37,12 @@ index 3696c8e..74e64c9 100644
 +    if (interlocked_xchg_add( &nb_threads, 0 ) <= 1)
      {
          LdrShutdownProcess();
-         exit( status );
-@@ -405,6 +406,11 @@ void exit_thread( int status )
-         }
-     }
- 
+         pthread_sigmask( SIG_BLOCK, &server_block_set, NULL );
+@@ -445,6 +602,12 @@ void abort_thread( int status )
+  */
+ void exit_thread( int status )
+ {
++
 +    sigemptyset( &sigset );
 +    sigaddset( &sigset, SIGQUIT );
 +    pthread_sigmask( SIG_BLOCK, &sigset, NULL );
