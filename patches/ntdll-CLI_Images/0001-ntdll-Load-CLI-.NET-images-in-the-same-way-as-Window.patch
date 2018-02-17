@@ -167,24 +167,20 @@ index cdf8d586c36..fa66c4c40d2 100644
      if (wm->ldr.TlsIndex != -1) call_tls_callbacks( wm->ldr.BaseAddress, reason );
      if (!entry || !(wm->ldr.Flags & LDR_IMAGE_IS_DLL)) return STATUS_SUCCESS;
  
-@@ -3147,7 +3266,7 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
-     InsertHeadList( &peb->LdrData->InMemoryOrderModuleList, &wm->ldr.InMemoryOrderModuleList );
- 
-     if ((status = virtual_alloc_thread_stack( NtCurrentTeb(), 0, 0 )) != STATUS_SUCCESS) goto error;
--    if ((status = server_init_process_done( &context )) != STATUS_SUCCESS) goto error;
+@@ -3152,6 +3328,14 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
+              debugstr_w(peb->ProcessParameters->ImagePathName.Buffer), status );
+         NtTerminateProcess( GetCurrentProcess(), status );
+     }
++
 +    if ((status = server_init_process_done( &start_context )) != STATUS_SUCCESS) goto error;
- 
-     actctx_init();
-     load_path = NtCurrentTeb()->Peb->ProcessParameters->DllPath.Buffer;
-@@ -3163,7 +3282,7 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
-     timeout.QuadPart = 0;
-     NtDelayExecution( TRUE, &timeout );
- 
--    if (context.ContextFlags) NtSetContextThread( GetCurrentThread(), &context );
++
++    timeout.QuadPart = 0;
++    NtDelayExecution( TRUE, &timeout );
++
 +    if (start_context.ContextFlags) NtSetContextThread( GetCurrentThread(), &start_context );
-     wine_switch_to_stack( start_process, wm->ldr.EntryPoint, NtCurrentTeb()->Tib.StackBase );
- 
- error:
++
+     server_init_process_done();
+ }
 -- 
 2.14.1
 
