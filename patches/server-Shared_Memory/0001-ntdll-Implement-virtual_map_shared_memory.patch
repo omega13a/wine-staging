@@ -13,10 +13,6 @@ diff --git a/dlls/ntdll/ntdll_misc.h b/dlls/ntdll/ntdll_misc.h
 index c97b1e1f73f..9a5578c946d 100644
 --- a/dlls/ntdll/ntdll_misc.h
 +++ b/dlls/ntdll/ntdll_misc.h
-diff --git a/dlls/ntdll/ntdll_misc.h b/dlls/ntdll/ntdll_misc.h
-index 8a643388b5..5f9da6a5ec 100644
---- a/dlls/ntdll/ntdll_misc.h
-+++ b/dlls/ntdll/ntdll_misc.h
 @@ -172,6 +172,7 @@ extern void virtual_get_system_info( SYSTEM_BASIC_INFORMATION *info ) DECLSPEC_H
  extern NTSTATUS virtual_create_builtin_view( void *base ) DECLSPEC_HIDDEN;
  extern NTSTATUS virtual_alloc_thread_stack( TEB *teb, SIZE_T reserve_size,
