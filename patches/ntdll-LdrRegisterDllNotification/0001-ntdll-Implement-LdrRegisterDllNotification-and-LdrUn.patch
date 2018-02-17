@@ -198,10 +198,10 @@ diff --git a/dlls/ntdll/tests/rtl.c b/dlls/ntdll/tests/rtl.c
 index 4700f4ac54a..93415ee5da0 100644
 --- a/dlls/ntdll/tests/rtl.c
 +++ b/dlls/ntdll/tests/rtl.c
-@@ -112,6 +112,8 @@ static BOOL      (WINAPI *pRtlIsCriticalSectionLockedByThread)(CRITICAL_SECTION
- static NTSTATUS  (WINAPI *pRtlInitializeCriticalSectionEx)(CRITICAL_SECTION *, ULONG, ULONG);
+@@ -101,6 +101,8 @@ static NTSTATUS  (WINAPI *pRtlInitializeCriticalSectionEx)(CRITICAL_SECTION *, U
  static NTSTATUS  (WINAPI *pLdrEnumerateLoadedModules)(void *, void *, void *);
- static NTSTATUS  (WINAPI *pRtlQueryPackageIdentity)(HANDLE, WCHAR*, SIZE_T*, WCHAR*, SIZE_T*, BOOLEAN*);
+ static NTSTATUS  (WINAPI *pRtlMakeSelfRelativeSD)(PSECURITY_DESCRIPTOR,PSECURITY_DESCRIPTOR,LPDWORD);
+ static NTSTATUS  (WINAPI *pRtlAbsoluteToSelfRelativeSD)(PSECURITY_DESCRIPTOR,PSECURITY_DESCRIPTOR,PULONG);
 +static NTSTATUS  (WINAPI *pLdrRegisterDllNotification)(ULONG, PLDR_DLL_NOTIFICATION_FUNCTION, void *, void **);
 +static NTSTATUS  (WINAPI *pLdrUnregisterDllNotification)(void *);
  
