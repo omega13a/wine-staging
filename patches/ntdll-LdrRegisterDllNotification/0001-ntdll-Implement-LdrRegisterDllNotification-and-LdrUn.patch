@@ -23,7 +23,7 @@ index 15ed31452e1..de2800c260a 100644
  #include "wine/server.h"
  #include "ntdll_misc.h"
  #include "ddk/wdm.h"
-@@ -64,6 +65,15 @@ WINE_DECLARE_DEBUG_CHANNEL(pid);
+@@ -63,7 +63,20 @@ WINE_DECLARE_DEBUG_CHANNEL(imports);
  typedef DWORD (CALLBACK *DLLENTRYPROC)(HMODULE,DWORD,LPVOID);
  typedef void  (CALLBACK *LDRENUMPROC)(LDR_MODULE *, void *, BOOLEAN *);
  
@@ -36,9 +36,14 @@ index 15ed31452e1..de2800c260a 100644
 +
 +static struct list ldr_notifications = LIST_INIT( ldr_notifications );
 +
- #define IS_OPTION_TRUE(ch) ((ch) == 'y' || (ch) == 'Y' || (ch) == 't' || (ch) == 'T' || (ch) == '1')
++#define IS_OPTION_TRUE(ch) ((ch) == 'y' || (ch) == 'Y' || (ch) == 't' || (ch) == 'T' || (ch) == '1')
++
++static BOOL hide_wine_exports = FALSE;  /* try to hide ntdll wine exports from applications */
+ static BOOL imports_fixup_done = FALSE;  /* set once the imports have been fixed up, before attaching them */
++static BOOL process_attaching = TRUE;   /* set on process attach to avoid calling callbacks too early */
+ static BOOL process_detaching = FALSE;  /* set on process detach to avoid deadlocks with thread detach */
+ static int free_lib_count;   /* recursion depth of LdrUnloadDll calls */
  
- static BOOL process_attaching = TRUE;   /* set on process attach to avoid calling callbacks too early */
 @@ -355,6 +365,39 @@ static ULONG_PTR allocate_stub( const char *dll, const char *name )
  static inline ULONG_PTR allocate_stub( const char *dll, const char *name ) { return 0xdeadbeef; }
  #endif  /* __i386__ */
