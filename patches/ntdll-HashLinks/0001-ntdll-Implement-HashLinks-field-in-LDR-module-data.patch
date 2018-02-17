@@ -101,12 +101,6 @@ index 1f6f3176760..f51ac62b976 100644
  START_TEST(loader)
  {
      int argc;
-@@ -3097,4 +3171,5 @@ START_TEST(loader)
-     test_import_resolution();
-     test_ExitProcess();
-     test_InMemoryOrderModuleList();
-+    test_HashLinks();
- }
 diff --git a/dlls/ntdll/loader.c b/dlls/ntdll/loader.c
 index 4ff69b674a3..691eb60e865 100644
 --- a/dlls/ntdll/loader.c
