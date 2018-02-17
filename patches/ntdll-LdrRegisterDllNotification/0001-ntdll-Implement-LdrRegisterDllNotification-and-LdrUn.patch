@@ -225,10 +225,80 @@ index 4700f4ac54a..93415ee5da0 100644
          pRtlAbsoluteToSelfRelativeSD = (void *)GetProcAddress(hntdll, "RtlAbsoluteToSelfRelativeSD");
      }
      hkernel32 = LoadLibraryA("kernel32.dll");
-@@ -3345,6 +3352,248 @@ done:
-     CoUninitialize();
+@@ -2213,6 +2213,320 @@ static void test_LdrEnumerateLoadedModules(void)
+     ok(status == STATUS_INVALID_PARAMETER, "expected STATUS_INVALID_PARAMETER, got 0x%08x\n", status);
  }
  
++static void test_RtlQueryPackageIdentity(void)
++{
++    const WCHAR programW[] = {'M','i','c','r','o','s','o','f','t','.','W','i','n','d','o','w','s','.',
++                              'P','h','o','t','o','s','_','8','w','e','k','y','b','3','d','8','b','b','w','e','!','A','p','p',0};
++    const WCHAR fullnameW[] = {'M','i','c','r','o','s','o','f','t','.','W','i','n','d','o','w','s','.',
++                               'P','h','o','t','o','s', 0};
++    const WCHAR appidW[] = {'A','p','p',0};
++    IApplicationActivationManager *manager;
++    WCHAR buf1[MAX_PATH], buf2[MAX_PATH];
++    HANDLE process, token;
++    SIZE_T size1, size2;
++    NTSTATUS status;
++    DWORD processid;
++    HRESULT hr;
++    BOOL ret;
++
++    if (!pRtlQueryPackageIdentity)
++    {
++        win_skip("RtlQueryPackageIdentity not available\n");
++        return;
++    }
++
++    size1 = size2 = MAX_PATH * sizeof(WCHAR);
++    status = pRtlQueryPackageIdentity((HANDLE)~(ULONG_PTR)3, buf1, &size1, buf2, &size2, NULL);
++    ok(status == STATUS_NOT_FOUND, "expected STATUS_NOT_FOUND, got %08x\n", status);
++
++    CoInitializeEx(0, COINIT_APARTMENTTHREADED);
++    hr = CoCreateInstance(&CLSID_ApplicationActivationManager, NULL, CLSCTX_LOCAL_SERVER,
++                          &IID_IApplicationActivationManager, (void **)&manager);
++    if (FAILED(hr))
++    {
++        todo_wine win_skip("Failed to create ApplicationActivationManager (%x)\n", hr);
++        goto done;
++    }
++
++    hr = IApplicationActivationManager_ActivateApplication(manager, programW, NULL,
++                                                           AO_NOERRORUI, &processid);
++    if (FAILED(hr))
++    {
++        todo_wine win_skip("Failed to start program (%x)\n", hr);
++        IApplicationActivationManager_Release(manager);
++        goto done;
++    }
++
++    process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_TERMINATE, FALSE, processid);
++    ok(process != NULL, "OpenProcess failed with %u\n", GetLastError());
++    ret = OpenProcessToken(process, TOKEN_QUERY, &token);
++    ok(ret, "OpenProcessToken failed with error %u\n", GetLastError());
++
++    size1 = size2 = MAX_PATH * sizeof(WCHAR);
++    status = pRtlQueryPackageIdentity(token, buf1, &size1, buf2, &size2, NULL);
++    ok(status == STATUS_SUCCESS, "Expected STATUS_SUCCESS, got %08x\n", status);
++
++    ok(!memcmp(buf1, fullnameW, sizeof(fullnameW) - sizeof(WCHAR)),
++       "Expected buf1 to begin with %s, got %s\n", wine_dbgstr_w(fullnameW), wine_dbgstr_w(buf1));
++    ok(size1 >= sizeof(WCHAR) && !(size1 % sizeof(WCHAR)), "Unexpected size1 = %lu\n", size1);
++    ok(buf1[size1 / sizeof(WCHAR) - 1] == 0, "Expected buf1[%lu] == 0\n", size1 / sizeof(WCHAR) - 1);
++
++    ok(!lstrcmpW(buf2, appidW), "Expected buf2 to be %s, got %s\n", wine_dbgstr_w(appidW), wine_dbgstr_w(buf2));
++    ok(size2 >= sizeof(WCHAR) && !(size2 % sizeof(WCHAR)), "Unexpected size2 = %lu\n", size2);
++    ok(buf2[size2 / sizeof(WCHAR) - 1] == 0, "Expected buf2[%lu] == 0\n", size2 / sizeof(WCHAR) - 1);
++
++    CloseHandle(token);
++    TerminateProcess(process, 0);
++    CloseHandle(process);
++
++done:
++    CoUninitialize();
++}
++
 +static DWORD (CALLBACK *orig_entry)(HMODULE,DWORD,LPVOID);
 +static DWORD *dll_main_data;
 +
@@ -471,9 +541,11 @@ index 4700f4ac54a..93415ee5da0 100644
 +    pLdrUnregisterDllNotification(cookie);
 +}
 +
- START_TEST(rtl)
++
++
+ static void test_RtlMakeSelfRelativeSD(void)
  {
-     InitFunctionPtrs();
+     char buf[sizeof(SECURITY_DESCRIPTOR_RELATIVE) + 4];
 @@ -3384,4 +3633,5 @@ START_TEST(rtl)
      test_RtlLeaveCriticalSection();
      test_LdrEnumerateLoadedModules();
