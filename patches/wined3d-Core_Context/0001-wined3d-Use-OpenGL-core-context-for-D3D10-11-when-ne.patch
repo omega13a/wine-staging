@@ -13,11 +13,11 @@ diff --git a/dlls/dxgi/factory.c b/dlls/dxgi/factory.c
 index c218276a220..49c0a10a95d 100644
 --- a/dlls/dxgi/factory.c
 +++ b/dlls/dxgi/factory.c
-@@ -318,7 +318,7 @@ static HRESULT dxgi_factory_init(struct dxgi_factory *factory, BOOL extended)
+@@ -549,7 +562,7 @@ static HRESULT dxgi_factory_init(struct dxgi_factory *factory, BOOL extended)
      wined3d_private_store_init(&factory->private_store);
  
      wined3d_mutex_lock();
--    factory->wined3d = wined3d_create(WINED3D_FORWARD_DEPTH_BIAS);
+-    factory->wined3d = wined3d_create(0);
 +    factory->wined3d = wined3d_create(WINED3D_FORWARD_DEPTH_BIAS | WINED3D_REQUEST_D3D10);
      wined3d_mutex_unlock();
      if (!factory->wined3d)
@@ -45,21 +45,23 @@ index 68d7e8cba0f..ea70b4b27cb 100644
  static BOOL wined3d_adapter_init(struct wined3d_adapter *adapter, UINT ordinal, DWORD wined3d_creation_flags)
  {
      static const DWORD supported_gl_versions[] =
-@@ -6531,8 +6543,9 @@ static BOOL wined3d_adapter_init(struct wined3d_adapter *adapter, UINT ordinal,
+@@ -6573,9 +6614,9 @@ static BOOL wined3d_adapter_init(struct wined3d_adapter *adapter, UINT ordinal,
      };
      struct wined3d_gl_info *gl_info = &adapter->gl_info;
      struct wined3d_caps_gl_ctx caps_gl_ctx = {0};
 -    unsigned int i;
 +    DWORD max_gl_version = wined3d_settings.max_gl_version;
      DISPLAY_DEVICEW display_device;
+-    DWORD max_gl_version;
 +    unsigned int i;
  
      TRACE("adapter %p, ordinal %u.\n", adapter, ordinal);
  
-@@ -6577,15 +6590,25 @@ static BOOL wined3d_adapter_init(struct wined3d_adapter *adapter, UINT ordinal,
-         return FALSE;
+@@ -6621,6 +6662,17 @@ static BOOL wined3d_adapter_init(struct wined3d_adapter *adapter, UINT ordinal,
      }
  
+     max_gl_version = get_max_gl_version(gl_info, wined3d_creation_flags);
++
 +    if (wined3d_creation_flags & WINED3D_REQUEST_D3D10)
 +    {
 +        const char *gl_extensions = (const char *)gl_info->gl_ops.gl.p_glGetString(GL_EXTENSIONS);
@@ -72,18 +74,7 @@ index 68d7e8cba0f..ea70b4b27cb 100644
 +
      for (i = 0; i < ARRAY_SIZE(supported_gl_versions); ++i)
      {
--        if (supported_gl_versions[i] <= wined3d_settings.max_gl_version)
-+        if (supported_gl_versions[i] <= max_gl_version)
-             break;
-     }
-     if (i == ARRAY_SIZE(supported_gl_versions))
-     {
-         ERR_(winediag)("Requested invalid GL version %u.%u.\n",
--                wined3d_settings.max_gl_version >> 16, wined3d_settings.max_gl_version & 0xffff);
-+                max_gl_version >> 16, max_gl_version & 0xffff);
-         i = ARRAY_SIZE(supported_gl_versions) - 1;
-     }
- 
+         if (supported_gl_versions[i] <= max_gl_version)
 diff --git a/include/wine/wined3d.h b/include/wine/wined3d.h
 index 90862d61535..11a5bc4e933 100644
 --- a/include/wine/wined3d.h
