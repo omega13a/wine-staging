@@ -77,14 +77,6 @@ index 06708b5f2b4..9795a2c68ba 100644
  static void test_early_depth_stencil(void)
  {
      ID3D11DepthStencilState *depth_stencil_state;
-@@ -25143,6 +26127,7 @@ START_TEST(d3d11)
-     test_gather_c();
-     test_depth_bias();
-     test_fractional_viewports();
-+    test_negative_viewports();
-     test_early_depth_stencil();
-     test_conservative_depth_output();
-     test_format_compatibility();
 diff --git a/dlls/d3d8/directx.c b/dlls/d3d8/directx.c
 index 24bd8315983..491efea31e2 100644
 --- a/dlls/d3d8/directx.c
