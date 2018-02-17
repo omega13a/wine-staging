@@ -29,7 +29,7 @@ index 0e862f9..a7e92b8 100644
  static NTSTATUS process_attach( WINE_MODREF *wm, LPVOID lpReserved );
  static FARPROC find_ordinal_export( HMODULE module, const IMAGE_EXPORT_DIRECTORY *exports,
                                      DWORD exp_size, DWORD ordinal, LPCWSTR load_path );
-@@ -443,7 +445,7 @@ static FARPROC find_forwarded_export( HMODULE module, const char *forward, LPCWS
+@@ -442,7 +522,7 @@ static FARPROC find_forwarded_export( HMODULE module, const char *forward, LPCWS
      if (!(wm = find_basename_module( mod_name )))
      {
          TRACE( "delay loading %s for '%s'\n", debugstr_w(mod_name), forward );
@@ -37,7 +37,7 @@ index 0e862f9..a7e92b8 100644
 +        if (load_dll( load_path, mod_name, NULL, 0, &wm ) == STATUS_SUCCESS &&
              !(wm->ldr.Flags & LDR_DONT_RESOLVE_REFS))
          {
-             if (process_attaching)
+             if (!imports_fixup_done && current_modref)
 @@ -612,7 +614,7 @@ static BOOL import_dll( HMODULE module, const IMAGE_IMPORT_DESCRIPTOR *descr, LP
      {
          ascii_to_unicode( buffer, name, len );
