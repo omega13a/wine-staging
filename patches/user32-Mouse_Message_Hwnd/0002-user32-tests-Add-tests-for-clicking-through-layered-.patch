@@ -26,7 +26,7 @@ index 62cd5b38055..47c5fa8c932 100644
  #include "winnls.h"
  
  #include "wine/test.h"
-@@ -1927,7 +1928,9 @@ static void test_Input_mouse(void)
+@@ -1926,7 +1995,9 @@ static void test_Input_mouse(void)
      struct thread_data thread_data;
      HANDLE thread;
      DWORD thread_id;
@@ -34,8 +34,8 @@ index 62cd5b38055..47c5fa8c932 100644
      POINT pt, pt_org;
 +    BOOL ret;
      MSG msg;
+     BOOL ret;
  
-     GetCursorPos(&pt_org);
 @@ -2131,6 +2134,160 @@ static void test_Input_mouse(void)
      ok(got_button_up, "expected WM_LBUTTONUP message\n");
      DestroyWindow(hwnd);
