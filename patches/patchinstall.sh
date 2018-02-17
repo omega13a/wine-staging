@@ -8956,7 +8956,6 @@ if test "$enable_windowscodecs_GIF_Encoder" -eq 1; then
 	patch_apply windowscodecs-GIF_Encoder/0001-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
 	patch_apply windowscodecs-GIF_Encoder/0002-windowscodecs-Implement-IWICBitmapEncoderInfo-GetFil.patch
 	patch_apply windowscodecs-GIF_Encoder/0004-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
-	patch_apply windowscodecs-GIF_Encoder/0005-windowscodecs-Avoid-crashing-if-no-IPropertyBag2-was.patch
 	patch_apply windowscodecs-GIF_Encoder/0006-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
 	patch_apply windowscodecs-GIF_Encoder/0007-windowscodecs-Avoid-crashing-if-no-IPropertyBag2-was.patch
 	patch_apply windowscodecs-GIF_Encoder/0008-windowscodecs-Add-initial-implementation-of-the-GIF-.patch
