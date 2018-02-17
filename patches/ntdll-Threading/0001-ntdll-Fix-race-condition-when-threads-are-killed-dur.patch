@@ -21,14 +21,6 @@ diff --git a/dlls/ntdll/thread.c b/dlls/ntdll/thread.c
 index 3696c8e..74e64c9 100644
 --- a/dlls/ntdll/thread.c
 +++ b/dlls/ntdll/thread.c
-@@ -459,6 +616,7 @@ void exit_thread( int status )
- void WINAPI RtlExitUserThread( ULONG status )
- {
-     static void *prev_teb;
-+    sigset_t sigset;
-     TEB *teb;
- 
-     if (status)  /* send the exit code to the server (0 is already the default) */
 @@ -472,7 +630,7 @@ void WINAPI RtlExitUserThread( ULONG status )
          SERVER_END_REQ;
      }
