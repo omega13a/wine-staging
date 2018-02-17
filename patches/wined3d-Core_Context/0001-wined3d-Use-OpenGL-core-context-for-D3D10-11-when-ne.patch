@@ -75,18 +75,6 @@ index 68d7e8cba0f..ea70b4b27cb 100644
      for (i = 0; i < ARRAY_SIZE(supported_gl_versions); ++i)
      {
          if (supported_gl_versions[i] <= max_gl_version)
-diff --git a/include/wine/wined3d.h b/include/wine/wined3d.h
-index 90862d61535..11a5bc4e933 100644
---- a/include/wine/wined3d.h
-+++ b/include/wine/wined3d.h
-@@ -1307,6 +1310,7 @@ enum wined3d_shader_byte_code_format
- #define WINED3D_NO_PRIMITIVE_RESTART                            0x00000800
- #define WINED3D_LEGACY_CUBEMAP_FILTERING                        0x00001000
- #define WINED3D_NORMALIZED_DEPTH_BIAS                           0x00002000
-+#define WINED3D_REQUEST_D3D10                                   0x00004000
- 
- #define WINED3D_RESZ_CODE                                       0x7fa05000
- 
 -- 
 2.13.1
 
