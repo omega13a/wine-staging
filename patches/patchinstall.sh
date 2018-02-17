@@ -9404,7 +9404,6 @@ fi
 # |
 if test "$enable_wined3d_Copy_Resource_Typeless" -eq 1; then
 	patch_apply wined3d-Copy_Resource_Typeless/0001-d3d11-tests-Add-more-advanced-CopySubresourceRegion-.patch
-	patch_apply wined3d-Copy_Resource_Typeless/0002-wined3d-Add-WINED3DFMT_R8G8B8A8_SNORM-to-WINED3DFMT_.patch
 	patch_apply wined3d-Copy_Resource_Typeless/0003-wined3d-Implement-copying-sub-resources-between-comp.patch
 	patch_apply wined3d-Copy_Resource_Typeless/0004-wined3d-Use-wined3d_cs_emit_copy_sub_resource-also-f.patch
 	(
