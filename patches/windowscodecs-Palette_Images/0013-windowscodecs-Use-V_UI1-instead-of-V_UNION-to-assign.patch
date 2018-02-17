@@ -9,16 +9,15 @@ Subject: windowscodecs: Use V_UI1() instead of V_UNION() to assign a VT_UI1
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/dlls/windowscodecs/tiffformat.c b/dlls/windowscodecs/tiffformat.c
-index d94be78..1f757d8 100644
+index f125b07bed..d2f2d66d5c 100644
 --- a/dlls/windowscodecs/tiffformat.c
 +++ b/dlls/windowscodecs/tiffformat.c
-@@ -1971,7 +1971,7 @@ static HRESULT WINAPI TiffEncoder_CreateNewFrame(IWICBitmapEncoder *iface,
-             VARIANT v;
+@@ -1966,6 +1966,7 @@ static HRESULT WINAPI TiffEncoder_CreateNewFrame(IWICBitmapEncoder *iface,
              VariantInit(&v);
              V_VT(&v) = VT_UI1;
--            V_UNION(&v, bVal) = WICTiffCompressionDontCare;
+             V_UNION(&v, bVal) = WICTiffCompressionDontCare;
 +            V_UI1(&v) = WICTiffCompressionDontCare;
-             hr = IPropertyBag2_Write(*ppIEncoderOptions, 1, opts, &v);
+             hr = IPropertyBag2_Write(*ppIEncoderOptions, 1, (PROPBAG2 *)opts, &v);
              VariantClear(&v);
              if (FAILED(hr))
 -- 
