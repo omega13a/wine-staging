@@ -77,14 +77,14 @@ index 06708b5f2b4..9795a2c68ba 100644
  static void test_early_depth_stencil(void)
  {
      ID3D11DepthStencilState *depth_stencil_state;
-@@ -21486,6 +21540,7 @@ START_TEST(d3d11)
-     test_gather();
+@@ -25143,6 +26127,7 @@ START_TEST(d3d11)
      test_gather_c();
+     test_depth_bias();
      test_fractional_viewports();
 +    test_negative_viewports();
      test_early_depth_stencil();
      test_conservative_depth_output();
- }
+     test_format_compatibility();
 diff --git a/dlls/d3d8/directx.c b/dlls/d3d8/directx.c
 index 24bd8315983..491efea31e2 100644
 --- a/dlls/d3d8/directx.c
@@ -102,15 +102,15 @@ diff --git a/dlls/d3d9/directx.c b/dlls/d3d9/directx.c
 index fe7163fa88a..c1389529588 100644
 --- a/dlls/d3d9/directx.c
 +++ b/dlls/d3d9/directx.c
-@@ -580,7 +580,7 @@ BOOL d3d9_init(struct d3d9 *d3d9, BOOL extended)
+@@ -578,7 +578,7 @@ BOOL d3d9_init(struct d3d9 *d3d9, BOOL extended)
  {
      DWORD flags = WINED3D_PRESENT_CONVERSION | WINED3D_HANDLE_RESTORE | WINED3D_PIXEL_CENTER_INTEGER
              | WINED3D_SRGB_READ_WRITE_CONTROL | WINED3D_LEGACY_UNBOUND_RESOURCE_COLOR
--            | WINED3D_NO_PRIMITIVE_RESTART | WINED3D_LEGACY_CUBEMAP_FILTERING;
-+            | WINED3D_NO_PRIMITIVE_RESTART | WINED3D_LEGACY_CUBEMAP_FILTERING | WINED3D_LIMIT_VIEWPORT;
+-            | WINED3D_NO_PRIMITIVE_RESTART | WINED3D_LEGACY_CUBEMAP_FILTERING
++            | WINED3D_NO_PRIMITIVE_RESTART | WINED3D_LEGACY_CUBEMAP_FILTERING | WINED3D_LIMIT_VIEWPORT
+             | WINED3D_NORMALIZED_DEPTH_BIAS;
  
      if (!extended)
-         flags |= WINED3D_VIDMEM_ACCOUNTING;
 diff --git a/dlls/ddraw/ddraw_private.h b/dlls/ddraw/ddraw_private.h
 index 0ae45328709..214c1718694 100644
 --- a/dlls/ddraw/ddraw_private.h
