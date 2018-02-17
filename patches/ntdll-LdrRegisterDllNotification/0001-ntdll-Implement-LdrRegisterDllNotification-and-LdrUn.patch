@@ -217,15 +217,16 @@ index 4700f4ac54a..93415ee5da0 100644
  static ULONG src_aligned_block[4];
  static ULONG dest_aligned_block[32];
  static const char *src = (const char*)src_aligned_block;
-@@ -175,6 +180,8 @@ static void InitFunctionPtrs(void)
+@@ -155,6 +155,9 @@ static void InitFunctionPtrs(void)
+         pRtlIsCriticalSectionLockedByThread = (void *)GetProcAddress(hntdll, "RtlIsCriticalSectionLockedByThread");
          pRtlInitializeCriticalSectionEx = (void *)GetProcAddress(hntdll, "RtlInitializeCriticalSectionEx");
          pLdrEnumerateLoadedModules = (void *)GetProcAddress(hntdll, "LdrEnumerateLoadedModules");
-         pRtlQueryPackageIdentity = (void *)GetProcAddress(hntdll, "RtlQueryPackageIdentity");
++        pRtlQueryPackageIdentity = (void *)GetProcAddress(hntdll, "RtlQueryPackageIdentity");
 +        pLdrRegisterDllNotification = (void *)GetProcAddress(hntdll, "LdrRegisterDllNotification");
 +        pLdrUnregisterDllNotification = (void *)GetProcAddress(hntdll, "LdrUnregisterDllNotification");
+         pRtlMakeSelfRelativeSD = (void *)GetProcAddress(hntdll, "RtlMakeSelfRelativeSD");
+         pRtlAbsoluteToSelfRelativeSD = (void *)GetProcAddress(hntdll, "RtlAbsoluteToSelfRelativeSD");
      }
-     hkernel32 = LoadLibraryA("kernel32.dll");
-     ok(hkernel32 != 0, "LoadLibrary failed\n");
 @@ -3345,6 +3352,248 @@ done:
      CoUninitialize();
  }
