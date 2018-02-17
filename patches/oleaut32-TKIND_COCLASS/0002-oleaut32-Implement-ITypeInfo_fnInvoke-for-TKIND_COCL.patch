@@ -9,19 +9,6 @@ Subject: oleaut32: Implement ITypeInfo_fnInvoke for TKIND_COCLASS in
  dlls/oleaut32/typelib.c        | 15 +++++++++++++++
  2 files changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/dlls/oleaut32/tests/tmarshal.c b/dlls/oleaut32/tests/tmarshal.c
-index 96399cc..758b85f 100644
---- a/dlls/oleaut32/tests/tmarshal.c
-+++ b/dlls/oleaut32/tests/tmarshal.c
-@@ -1514,7 +1514,7 @@ static void test_typelibmarshal(void)
-     dispparams.rgvarg = vararg;
-     VariantInit(&varresult);
-     hr = IDispatch_Invoke(pDispatch, DISPID_TM_COCLASS, &IID_NULL, LOCALE_NEUTRAL, DISPATCH_METHOD, &dispparams, &varresult, &excepinfo, NULL);
--    todo_wine ok_ole_success(hr, IDispatch_Invoke);
-+    ok_ole_success(hr, IDispatch_Invoke);
-     ok(excepinfo.wCode == 0x0 && excepinfo.scode == S_OK,
-         "EXCEPINFO differs from expected: wCode = 0x%x, scode = 0x%08x\n",
-         excepinfo.wCode, excepinfo.scode);
 diff --git a/dlls/oleaut32/typelib.c b/dlls/oleaut32/typelib.c
 index deb898a..1cfdd7b 100644
 --- a/dlls/oleaut32/typelib.c
