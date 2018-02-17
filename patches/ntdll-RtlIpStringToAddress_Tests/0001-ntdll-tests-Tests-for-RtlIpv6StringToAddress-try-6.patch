@@ -30,9 +30,9 @@ index ac463c6..657c1ae 100644
  #include "ntdll_test.h"
  #include "inaddr.h"
 +#include "in6addr.h"
- #include "initguid.h"
- #define COBJMACROS
- #include "shobjidl.h"
+ 
+ #ifndef __WINE_WINTERNL_H
+ 
 @@ -92,9 +93,12 @@ static IMAGE_BASE_RELOCATION *(WINAPI *pLdrProcessRelocationBlock)(void*,UINT,US
  static CHAR *    (WINAPI *pRtlIpv4AddressToStringA)(const IN_ADDR *, LPSTR);
  static NTSTATUS  (WINAPI *pRtlIpv4AddressToStringExA)(const IN_ADDR *, USHORT, LPSTR, PULONG);
