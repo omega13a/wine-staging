@@ -11,7 +11,7 @@ diff --git a/dlls/d3d11/tests/d3d11.c b/dlls/d3d11/tests/d3d11.c
 index 3c8ff15d6eb..0dc1c94d883 100644
 --- a/dlls/d3d11/tests/d3d11.c
 +++ b/dlls/d3d11/tests/d3d11.c
-@@ -22062,6 +22062,116 @@ static void test_dual_blending(void)
+@@ -25021,6 +26225,116 @@ done:
      release_test_context(&test_context);
  }
  
@@ -125,9 +125,6 @@ index 3c8ff15d6eb..0dc1c94d883 100644
 +    release_test_context(&test_context);
 +}
 +
- START_TEST(d3d11)
- {
-     test_create_device();
 @@ -22167,4 +22277,5 @@ START_TEST(d3d11)
      test_early_depth_stencil();
      test_conservative_depth_output();
