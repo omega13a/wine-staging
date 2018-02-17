@@ -25,7 +25,7 @@ diff --git a/dlls/ntdll/thread.c b/dlls/ntdll/thread.c
 index ba1be0f3d8a..e8f07efb829 100644
 --- a/dlls/ntdll/thread.c
 +++ b/dlls/ntdll/thread.c
-@@ -445,6 +445,12 @@ void exit_thread( int status )
+@@ -491,6 +647,12 @@ void WINAPI RtlExitUserThread( ULONG status )
          if (thread_data->pthread_id)
          {
              pthread_join( thread_data->pthread_id, NULL );
@@ -35,7 +35,7 @@ index ba1be0f3d8a..e8f07efb829 100644
 +                SIZE_T size = 0;
 +                NtFreeVirtualMemory( GetCurrentProcess(), &addr, &size, MEM_RELEASE );
 +            }
-             signal_free_thread( teb );
+             free_thread_data( teb );
          }
      }
 diff --git a/dlls/ntdll/virtual.c b/dlls/ntdll/virtual.c
