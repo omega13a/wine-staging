@@ -27,14 +27,14 @@ diff --git a/dlls/ntdll/ntdll_misc.h b/dlls/ntdll/ntdll_misc.h
 index 823024215e0..a61638cdc06 100644
 --- a/dlls/ntdll/ntdll_misc.h
 +++ b/dlls/ntdll/ntdll_misc.h
-@@ -169,6 +169,7 @@ extern NTSTATUS nt_to_unix_file_name_attr( const OBJECT_ATTRIBUTES *attr, ANSI_S
-                                            UINT disposition ) DECLSPEC_HIDDEN;
- 
- /* virtual memory */
+@@ -168,6 +172,7 @@ extern NTSTATUS nt_to_unix_file_name_attr( const OBJECT_ATTRIBUTES *attr, ANSI_S
+ extern NTSTATUS virtual_map_section( HANDLE handle, PVOID *addr_ptr, ULONG zero_bits, SIZE_T commit_size,
+                                      const LARGE_INTEGER *offset_ptr, SIZE_T *size_ptr, ULONG protect,
+                                      pe_image_info_t *image_info ) DECLSPEC_HIDDEN;
 +extern NTSTATUS read_nt_symlink( HANDLE root, UNICODE_STRING *name, WCHAR *target, size_t length ) DECLSPEC_HIDDEN;
  extern void virtual_get_system_info( SYSTEM_BASIC_INFORMATION *info ) DECLSPEC_HIDDEN;
  extern NTSTATUS virtual_create_builtin_view( void *base ) DECLSPEC_HIDDEN;
- extern NTSTATUS virtual_alloc_thread_stack( TEB *teb, SIZE_T reserve_size, SIZE_T commit_size ) DECLSPEC_HIDDEN;
+ extern NTSTATUS virtual_alloc_thread_stack( TEB *teb, SIZE_T reserve_size,
 diff --git a/dlls/ntdll/virtual.c b/dlls/ntdll/virtual.c
 index 164186f274b..85a7f4dc059 100644
 --- a/dlls/ntdll/virtual.c
