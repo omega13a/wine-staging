@@ -61,37 +61,37 @@ index 33ce5cb2e4..1b0de9bdd3 100644
  static struct list icon_cache = LIST_INIT( icon_cache );
  
  /**********************************************************************
-@@ -103,6 +114,307 @@ static HDC get_screen_dc(void)
-     return screen_dc;
+@@ -108,6 +108,308 @@ static int get_display_bpp(void)
+     return ret;
  }
  
-+#ifdef SONAME_LIBPNG
-+
-+static void *libpng_handle;
-+#define MAKE_FUNCPTR(f) static typeof(f) * p##f
-+MAKE_FUNCPTR(png_create_read_struct);
-+MAKE_FUNCPTR(png_create_info_struct);
-+MAKE_FUNCPTR(png_destroy_read_struct);
-+MAKE_FUNCPTR(png_error);
-+MAKE_FUNCPTR(png_get_bit_depth);
-+MAKE_FUNCPTR(png_get_color_type);
-+MAKE_FUNCPTR(png_get_error_ptr);
-+MAKE_FUNCPTR(png_get_image_height);
-+MAKE_FUNCPTR(png_get_image_width);
-+MAKE_FUNCPTR(png_get_io_ptr);
-+MAKE_FUNCPTR(png_read_image);
-+MAKE_FUNCPTR(png_read_info);
-+MAKE_FUNCPTR(png_read_update_info);
-+MAKE_FUNCPTR(png_set_bgr);
-+MAKE_FUNCPTR(png_set_crc_action);
-+MAKE_FUNCPTR(png_set_error_fn);
-+MAKE_FUNCPTR(png_set_expand);
-+MAKE_FUNCPTR(png_set_gray_to_rgb);
-+MAKE_FUNCPTR(png_set_read_fn);
-+#undef MAKE_FUNCPTR
-+
-+static BOOL load_libpng(void)
-+{
+++#ifdef SONAME_LIBPNG
+++
+++static void *libpng_handle;
+++#define MAKE_FUNCPTR(f) static typeof(f) * p##f
+++MAKE_FUNCPTR(png_create_read_struct);
+++MAKE_FUNCPTR(png_create_info_struct);
+++MAKE_FUNCPTR(png_destroy_read_struct);
+++MAKE_FUNCPTR(png_error);
+++MAKE_FUNCPTR(png_get_bit_depth);
+++MAKE_FUNCPTR(png_get_color_type);
+++MAKE_FUNCPTR(png_get_error_ptr);
+++MAKE_FUNCPTR(png_get_image_height);
+++MAKE_FUNCPTR(png_get_image_width);
+++MAKE_FUNCPTR(png_get_io_ptr);
+++MAKE_FUNCPTR(png_read_image);
+++MAKE_FUNCPTR(png_read_info);
+++MAKE_FUNCPTR(png_read_update_info);
+++MAKE_FUNCPTR(png_set_bgr);
+++MAKE_FUNCPTR(png_set_crc_action);
+++MAKE_FUNCPTR(png_set_error_fn);
+++MAKE_FUNCPTR(png_set_expand);
+++MAKE_FUNCPTR(png_set_gray_to_rgb);
+++MAKE_FUNCPTR(png_set_read_fn);
+++#undef MAKE_FUNCPTR
+++
+++static BOOL load_libpng(void)
+++{
 +    USER_Lock();
 +
 +    if (!libpng_handle && (libpng_handle = wine_dlopen(SONAME_LIBPNG, RTLD_NOW, NULL, 0)) != NULL)
@@ -365,6 +365,7 @@ index 33ce5cb2e4..1b0de9bdd3 100644
 +}
 +
 +#endif
++
 +
  static HICON alloc_icon_handle( BOOL is_ani, UINT num_steps )
  {
