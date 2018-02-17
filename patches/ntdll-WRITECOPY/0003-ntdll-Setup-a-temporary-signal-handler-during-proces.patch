@@ -96,8 +96,8 @@ index c8b85936fbf..3442851e65a 100644
  
  /**********************************************************************
   *		segv_handler
-@@ -2621,6 +2646,34 @@ void signal_init_process( CONTEXT *context, LPTHREAD_START_ROUTINE entry )
-     exit(1);
+@@ -2078,6 +2091,34 @@ static void trap_handler( int signal, siginfo_t *siginfo, void *sigcontext )
+     }
  }
  
 +/**********************************************************************
@@ -129,8 +129,8 @@ index c8b85936fbf..3442851e65a 100644
 +    exit(1);
 +}
  
- #ifdef __HAVE_VM86
  /**********************************************************************
+  *		fpe_handler
 diff --git a/dlls/ntdll/signal_powerpc.c b/dlls/ntdll/signal_powerpc.c
 index e5a009c2aa2..dcbc1c4fa0b 100644
 --- a/dlls/ntdll/signal_powerpc.c
