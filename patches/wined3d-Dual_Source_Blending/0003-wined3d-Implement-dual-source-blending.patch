@@ -244,8 +244,8 @@ index fad3fadeeaa..aca97788f0e 100644
      UINT lights;
      UINT textures;
      UINT texture_coords;
-@@ -2810,6 +2814,22 @@ struct wined3d_state
-     struct wined3d_rasterizer_state *rasterizer_state;
+@@ -2873,6 +2873,22 @@ struct wined3d_dummy_textures
+     GLuint tex_2d_ms_array;
  };
  
 +static inline BOOL wined3d_dualblend_enabled(const struct wined3d_state *state, const struct wined3d_gl_info *gl_info)
