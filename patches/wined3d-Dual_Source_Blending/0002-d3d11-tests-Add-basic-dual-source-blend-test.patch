@@ -187,17 +187,6 @@ index 9795a2c68ba..da4e500f94f 100644
  static void test_format_compatibility(void)
  {
      ID3D11Texture2D *dst_texture, *src_texture;
-@@ -25143,8 +26350,10 @@ START_TEST(d3d11)
-     test_gather_c();
-     test_depth_bias();
-     test_fractional_viewports();
-+    test_negative_viewports();
-     test_early_depth_stencil();
-     test_conservative_depth_output();
-+    test_dual_blending();
-     test_format_compatibility();
-     test_clip_distance();
-     test_combined_clip_and_cull_distances();
 -- 
 2.14.1
 

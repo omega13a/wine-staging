@@ -128,12 +128,18 @@ index 3c8ff15d6eb..0dc1c94d883 100644
  START_TEST(d3d11)
  {
      unsigned int argc, i;
-@@ -22167,4 +22277,5 @@ START_TEST(d3d11)
+@@ -25143,8 +26350,11 @@ START_TEST(d3d11)
+     test_gather_c();
+     test_depth_bias();
+     test_fractional_viewports();
++    test_negative_viewports();
      test_early_depth_stencil();
      test_conservative_depth_output();
-     test_dual_blending();
++    test_dual_blending();
 +    test_mipmap_generation();
- }
+     test_format_compatibility();
+     test_clip_distance();
+     test_combined_clip_and_cull_distances();
 -- 
 2.14.2
 
