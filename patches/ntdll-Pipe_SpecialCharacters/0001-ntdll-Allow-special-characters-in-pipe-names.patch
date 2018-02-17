@@ -21,7 +21,7 @@ index f7c7531..04de950 100644
  
  #define NB_SERVER_LOOPS 8
  
-@@ -335,6 +336,15 @@ static void test_CreateNamedPipe(int pipemode)
+@@ -627,6 +627,16 @@ static void test_CreateNamedPipe(int pipemode)
  
      ok(CloseHandle(hnp), "CloseHandle\n");
  
@@ -34,7 +34,8 @@ index f7c7531..04de950 100644
 +    ok(hnp != INVALID_HANDLE_VALUE, "CreateNamedPipe with special characters failed\n");
 +    ok(CloseHandle(hnp), "CloseHandle\n");
 +
-     trace("test_CreateNamedPipe returning\n");
++
+     if (winetest_debug > 1) trace("test_CreateNamedPipe returning\n");
  }
  
 diff --git a/dlls/ntdll/directory.c b/dlls/ntdll/directory.c
