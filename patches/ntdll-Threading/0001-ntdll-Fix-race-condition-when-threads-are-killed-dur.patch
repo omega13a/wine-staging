@@ -21,8 +21,8 @@ diff --git a/dlls/ntdll/thread.c b/dlls/ntdll/thread.c
 index 3696c8e..74e64c9 100644
 --- a/dlls/ntdll/thread.c
 +++ b/dlls/ntdll/thread.c
-@@ -370,6 +370,7 @@ void terminate_thread( int status )
- void exit_thread( int status )
+@@ -459,6 +616,7 @@ void exit_thread( int status )
+ void WINAPI RtlExitUserThread( ULONG status )
  {
      static void *prev_teb;
 +    sigset_t sigset;
