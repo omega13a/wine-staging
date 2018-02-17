@@ -19,7 +19,7 @@ index e20d81b..0dc3c52 100644
   *
   * This library is free software; you can redistribute it and/or
   * modify it under the terms of the GNU Lesser General Public
-@@ -508,11 +509,254 @@ static void test_freed_hglobal(void)
+@@ -514,8 +514,252 @@ static void test_freed_hglobal(void)
      IStream_Release(pStream);
  }
  
@@ -264,16 +264,14 @@ index e20d81b..0dc3c52 100644
 +    ok(ret == 0, "unexpected %d\n", ret);
 +}
 +
++
++
  START_TEST(hglobalstream)
  {
-     HRESULT hr;
-     IStream *pStream;
- 
 +    test_IStream_Clone();
-+
-     hr = CreateStreamOnHGlobal(NULL, TRUE, &pStream);
-     ok_ole_success(hr, "CreateStreamOnHGlobal");
- 
+     test_streamonhglobal();
+     test_copyto();
+     test_freed_hglobal();
 -- 
 2.7.0
 
