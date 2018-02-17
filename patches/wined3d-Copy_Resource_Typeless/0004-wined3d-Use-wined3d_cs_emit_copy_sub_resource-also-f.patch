@@ -12,34 +12,35 @@ diff --git a/dlls/wined3d/device.c b/dlls/wined3d/device.c
 index 0515317d4f0..42749c7c87a 100644
 --- a/dlls/wined3d/device.c
 +++ b/dlls/wined3d/device.c
-@@ -4046,7 +4046,10 @@ void CDECL wined3d_device_copy_resource(struct wined3d_device *device,
+@@ -4038,8 +4063,10 @@ void CDECL wined3d_device_copy_resource(struct wined3d_device *device,
          return;
      }
  
--    if (src_resource->format->id != dst_resource->format->id)
+-    if (src_resource->format->typeless_id != dst_resource->format->typeless_id
+-            || (!src_resource->format->typeless_id && src_resource->format->id != dst_resource->format->id))
 +    if (src_resource->format->id != dst_resource->format->id &&
 +            (src_resource->format->typeless_id != dst_resource->format->typeless_id ||
 +            src_resource->format->gl_view_class != dst_resource->format->gl_view_class ||
 +            !src_resource->format->typeless_id))
      {
-         WARN("Resource formats (%s / %s) don't match.\n",
+         WARN("Resource formats %s and %s are incompatible.\n",
                  debug_d3dformat(dst_resource->format->id),
-@@ -4057,8 +4060,7 @@ void CDECL wined3d_device_copy_resource(struct wined3d_device *device,
+@@ -4050,8 +4077,7 @@ void CDECL wined3d_device_copy_resource(struct wined3d_device *device,
      if (dst_resource->type == WINED3D_RTYPE_BUFFER)
      {
          wined3d_box_set(&box, 0, 0, src_resource->size, 1, 0, 1);
 -        wined3d_cs_emit_blt_sub_resource(device->cs, dst_resource, 0, &box,
--                src_resource, 0, &box, 0, NULL, WINED3D_TEXF_POINT);
+-                src_resource, 0, &box, WINED3D_BLT_RAW, NULL, WINED3D_TEXF_POINT);
 +        wined3d_cs_emit_copy_sub_resource(device->cs, dst_resource, 0, &box, src_resource, 0, &box);
          return;
      }
  
-@@ -4084,8 +4086,7 @@ void CDECL wined3d_device_copy_resource(struct wined3d_device *device,
+@@ -4077,8 +4103,7 @@ void CDECL wined3d_device_copy_resource(struct wined3d_device *device,
          {
              unsigned int idx = j * dst_texture->level_count + i;
  
 -            wined3d_cs_emit_blt_sub_resource(device->cs, dst_resource, idx, &box,
--                    src_resource, idx, &box, 0, NULL, WINED3D_TEXF_POINT);
+-                    src_resource, idx, &box, WINED3D_BLT_RAW, NULL, WINED3D_TEXF_POINT);
 +            wined3d_cs_emit_copy_sub_resource(device->cs, dst_resource, idx, &box, src_resource, idx, &box);
          }
      }
