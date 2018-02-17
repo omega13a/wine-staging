@@ -222,16 +222,16 @@ index 4ff69b674a3..691eb60e865 100644
      if (wm->ldr.InInitializationOrderModuleList.Flink)
          RemoveEntryList(&wm->ldr.InInitializationOrderModuleList);
  
-@@ -3264,6 +3315,9 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
+@@ -3146,6 +3146,9 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
      RemoveEntryList( &wm->ldr.InMemoryOrderModuleList );
      InsertHeadList( &peb->LdrData->InMemoryOrderModuleList, &wm->ldr.InMemoryOrderModuleList );
  
 +    /* the windows version was not set yet when ntdll and kernel32 were loaded */
 +    recompute_hash_map();
 +
-     if ((status = virtual_alloc_thread_stack( NtCurrentTeb(), 0, 0 )) != STATUS_SUCCESS) goto error;
-     if ((status = server_init_process_done( &start_context )) != STATUS_SUCCESS) goto error;
- 
+     if ((status = virtual_alloc_thread_stack( NtCurrentTeb(), 0, 0, NULL )) != STATUS_SUCCESS)
+     {
+         ERR( "Main exe initialization for %s failed, status %x\n",
 @@ -3460,6 +3514,7 @@ void __wine_process_init(void)
      NTSTATUS status;
      ANSI_STRING func_name;
