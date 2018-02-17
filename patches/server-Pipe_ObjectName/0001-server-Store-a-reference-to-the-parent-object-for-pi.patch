@@ -53,15 +53,15 @@ index 58f68227f2d..c52a083df9a 100644
      no_open_file,                 /* open_file */
      no_alloc_handle,              /* alloc_handle */
      fd_close_handle,              /* close_handle */
-@@ -194,6 +196,8 @@ static const struct fd_ops pipe_server_fd_ops =
+@@ -193,6 +197,8 @@ static const struct fd_ops pipe_server_fd_ops =
+ 
  /* client end functions */
  static void pipe_client_dump( struct object *obj, int verbose );
- static int pipe_client_signaled( struct object *obj, struct wait_queue_entry *entry );
 +static int pipe_client_link_name( struct object *obj, struct object_name *name, struct object *parent );
 +static void pipe_client_unlink_name( struct object *obj, struct object_name *name );
  static void pipe_client_destroy( struct object *obj );
  static int pipe_client_ioctl( struct fd *fd, ioctl_code_t code, struct async *async );
- 
+ static void pipe_client_get_file_info( struct fd *fd, unsigned int info_class );
 @@ -212,8 +216,8 @@ static const struct object_ops pipe_client_ops =
      default_get_sd,               /* get_sd */
      default_set_sd,               /* set_sd */
