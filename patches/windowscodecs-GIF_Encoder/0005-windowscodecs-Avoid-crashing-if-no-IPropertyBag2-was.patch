@@ -12,25 +12,33 @@ diff --git a/dlls/windowscodecs/jpegformat.c b/dlls/windowscodecs/jpegformat.c
 index 53fa44f8094..a787a2c4c24 100644
 --- a/dlls/windowscodecs/jpegformat.c
 +++ b/dlls/windowscodecs/jpegformat.c
-@@ -1478,11 +1478,14 @@ static HRESULT WINAPI JpegEncoder_CreateNewFrame(IWICBitmapEncoder *iface,
-     opts[5].vt = VT_BOOL;
-     opts[5].dwType = PROPBAG2_TYPE_DATA;
+@@ -1393,11 +1393,22 @@ static HRESULT WINAPI JpegEncoder_GetContainerFormat(IWICBitmapEncoder *iface,
+     return E_NOTIMPL;
+ }
  
--    hr = CreatePropertyBag2(opts, 6, ppIEncoderOptions);
--    if (FAILED(hr))
-+    if (ppIEncoderOptions)
-     {
--        LeaveCriticalSection(&This->lock);
--        return hr;
-+        hr = CreatePropertyBag2(opts, 6, ppIEncoderOptions);
-+        if (FAILED(hr))
-+        {
-+            LeaveCriticalSection(&This->lock);
-+            return hr;
-+        }
-     }
+-static HRESULT WINAPI JpegEncoder_GetEncoderInfo(IWICBitmapEncoder *iface,
+-    IWICBitmapEncoderInfo **ppIEncoderInfo)
++static HRESULT WINAPI JpegEncoder_GetEncoderInfo(IWICBitmapEncoder *iface, IWICBitmapEncoderInfo **info)
+ {
+-    FIXME("(%p,%p): stub\n", iface, ppIEncoderInfo);
+-    return E_NOTIMPL;
++    IWICComponentInfo *comp_info;
++    HRESULT hr;
++
++    TRACE("%p,%p\n", iface, info);
++
++    if (!info) return E_INVALIDARG;
++
++    hr = CreateComponentInfo(&CLSID_WICJpegEncoder, &comp_info);
++    if (hr == S_OK)
++    {
++        hr = IWICComponentInfo_QueryInterface(comp_info, &IID_IWICBitmapEncoderInfo, (void **)info);
++        IWICComponentInfo_Release(comp_info);
++    }
++    return hr;
+ }
  
-     This->frame_count = 1;
+ static HRESULT WINAPI JpegEncoder_SetColorContexts(IWICBitmapEncoder *iface,
 -- 
 2.13.1
 
