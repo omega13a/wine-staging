@@ -27,16 +27,6 @@ index 47c5fa8c932..08c4c5435c6 100644
  
  #undef GET_PROC
  }
-@@ -1930,6 +1932,9 @@ static void test_Input_mouse(void)
-     DWORD thread_id;
-     WNDCLASSA wclass;
-     POINT pt, pt_org;
-+    int region_type;
-+    HRGN hregion;
-+    RECT region;
-     BOOL ret;
-     MSG msg;
- 
 @@ -2159,6 +2164,12 @@ static void test_Input_mouse(void)
      while (wait_for_message(&msg)) DispatchMessageA(&msg);
      Sleep(100);
