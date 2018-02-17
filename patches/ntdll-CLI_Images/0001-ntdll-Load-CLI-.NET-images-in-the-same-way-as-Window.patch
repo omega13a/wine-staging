@@ -167,14 +167,6 @@ index cdf8d586c36..fa66c4c40d2 100644
      if (wm->ldr.TlsIndex != -1) call_tls_callbacks( wm->ldr.BaseAddress, reason );
      if (!entry || !(wm->ldr.Flags & LDR_IMAGE_IS_DLL)) return STATUS_SUCCESS;
  
-@@ -3116,7 +3236,6 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
-     WINE_MODREF *wm;
-     LPCWSTR load_path;
-     PEB *peb = NtCurrentTeb()->Peb;
--    CONTEXT context = { 0 };
- 
-     kernel32_start_process = kernel_start;
-     if (main_exe_file) NtClose( main_exe_file );  /* at this point the main module is created */
 @@ -3147,7 +3266,7 @@ void WINAPI LdrInitializeThunk( void *kernel_start, ULONG_PTR unknown2,
      InsertHeadList( &peb->LdrData->InMemoryOrderModuleList, &wm->ldr.InMemoryOrderModuleList );
  
