@@ -19,17 +19,6 @@ index fc352dd22b..0de4fe8f20 100644
  
  C_SRCS = \
  	atom.c \
-diff --git a/dlls/ntdll/tests/rtl.c b/dlls/ntdll/tests/rtl.c
-index 2e3a7de75d..db63ad0fc9 100644
---- a/dlls/ntdll/tests/rtl.c
-+++ b/dlls/ntdll/tests/rtl.c
-@@ -2292,5 +2365,6 @@ START_TEST(rtl)
-     test_RtlInitializeCriticalSectionEx();
-     test_RtlLeaveCriticalSection();
-     test_LdrEnumerateLoadedModules();
-+    test_RtlQueryPackageIdentity();
-     test_RtlMakeSelfRelativeSD();
- }
 -- 
 2.12.2
 
