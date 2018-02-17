@@ -21,10 +21,10 @@ index 4fb5a95..b9d8cbb 100644
  {
      SLTG_Function *pFunc;
      unsigned short i;
-@@ -4277,6 +4278,8 @@ static void SLTG_DoFuncs(char *pBlk, char *pFirstItem, ITypeInfoImpl *pTI,
+@@ -4162,6 +4257,8 @@ static void SLTG_DoFuncs(char *pBlk, char *pFirstItem, ITypeInfoImpl *pTI,
  	pFuncDesc->funcdesc.cParams = pFunc->nacc >> 3;
  	pFuncDesc->funcdesc.cParamsOpt = (pFunc->retnextopt & 0x7e) >> 1;
- 	pFuncDesc->funcdesc.oVft = pFunc->vtblpos & ~1;
+ 	pFuncDesc->funcdesc.oVft = (pFunc->vtblpos & ~1) * sizeof(void *) / pTI->pTypeLib->ptr_size;
 +        if (pFunc->helpstring != 0xffff)
 +            pFuncDesc->HelpString = decode_string(hlp_strings, pBlk + pFunc->helpstring, pNameTable - pBlk, pTI->pTypeLib);
  
