@@ -33,15 +33,15 @@ diff --git a/server/named_pipe.c b/server/named_pipe.c
 index 58f68227f2d..c52a083df9a 100644
 --- a/server/named_pipe.c
 +++ b/server/named_pipe.c
-@@ -152,6 +152,8 @@ static void pipe_end_reselect_async( struct fd *fd, struct async_queue *queue );
+@@ -151,6 +152,8 @@ static void pipe_end_reselect_async( struct fd *fd, struct async_queue *queue );
  /* server end functions */
  static void pipe_server_dump( struct object *obj, int verbose );
  static void pipe_server_destroy( struct object *obj);
 +static int pipe_server_link_name( struct object *obj, struct object_name *name, struct object *parent );
 +static void pipe_server_unlink_name( struct object *obj, struct object_name *name );
  static int pipe_server_ioctl( struct fd *fd, ioctl_code_t code, struct async *async );
+ static void pipe_server_get_file_info( struct fd *fd, unsigned int info_class );
  
- static const struct object_ops pipe_server_ops =
 @@ -169,8 +171,8 @@ static const struct object_ops pipe_server_ops =
      default_get_sd,               /* get_sd */
      default_set_sd,               /* set_sd */
