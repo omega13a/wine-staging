@@ -94,15 +94,15 @@ index 0e862f9..a7e92b8 100644
  {
      void *module;
      HANDLE mapping;
-@@ -1816,7 +1818,7 @@ static NTSTATUS load_native_dll( LPCWSTR load_path, LPCWSTR name, HANDLE file,
+@@ -1829,7 +2055,7 @@ static NTSTATUS load_native_dll( LPCWSTR load_path, LPCWSTR name, HANDLE file,
  
      /* create the MODREF */
  
 -    if (!(wm = alloc_module( module, name )))
 +    if (!(wm = alloc_module( module, name, fakemodule )))
      {
-         status = STATUS_NO_MEMORY;
-         goto done;
+         if (module) NtUnmapViewOfSection( NtCurrentProcess(), module );
+         return STATUS_NO_MEMORY;
 @@ -1880,8 +1882,8 @@ done:
  /***********************************************************************
   *           load_builtin_dll
