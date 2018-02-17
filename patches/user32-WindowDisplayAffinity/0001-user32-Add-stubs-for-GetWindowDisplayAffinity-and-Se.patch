@@ -70,7 +70,7 @@ index 0fc262986bb..9b8d16adc5f 100644
  
  static BOOL test_lbuttondown_flag;
  static DWORD num_gettext_msgs;
-@@ -9950,6 +9952,88 @@ static void test_desktop( void )
+@@ -10043,6 +10130,89 @@ static void test_desktop( void )
      }
  }
  
@@ -156,9 +156,10 @@ index 0fc262986bb..9b8d16adc5f 100644
 +    SetWindowLongW(win, GWL_EXSTYLE, styleex);
 +}
 +
- START_TEST(win)
++
+ static BOOL is_topmost(HWND hwnd)
  {
-     char **argv;
+     return (GetWindowLongA(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST) != 0;
 @@ -9974,6 +10058,8 @@ START_TEST(win)
      pGetLayout = (void *)GetProcAddress( gdi32, "GetLayout" );
      pSetLayout = (void *)GetProcAddress( gdi32, "SetLayout" );
