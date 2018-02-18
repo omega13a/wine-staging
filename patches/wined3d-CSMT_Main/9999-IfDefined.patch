@@ -300,12 +300,12 @@ diff --git a/dlls/wined3d/device.c b/dlls/wined3d/device.c
 diff --git a/dlls/wined3d/surface.c b/dlls/wined3d/surface.c
 --- a/dlls/wined3d/surface.c
 +++ b/dlls/wined3d/surface.c
-@@ -2410,7 +2410,11 @@ static BOOL surface_load_texture(struct wined3d_surface *surface,
+@@ -2300,7 +2452,11 @@ static BOOL surface_load_texture(struct wined3d_surface *surface,
      /* Don't use PBOs for converted surfaces. During PBO conversion we look at
       * WINED3D_TEXTURE_CONVERTED but it isn't set (yet) in all cases it is
       * getting called. */
 +#if !defined(STAGING_CSMT)
-     if ((format.convert || conversion) && texture->sub_resources[sub_resource_idx].buffer_object)
+     if ((format.conv_byte_count || conversion) && texture->sub_resources[sub_resource_idx].buffer_object)
 +#else  /* STAGING_CSMT */
 +    if ((format.convert || conversion) && texture->sub_resources[sub_resource_idx].buffer)
 +#endif /* STAGING_CSMT */
@@ -315,9 +315,9 @@ diff --git a/dlls/wined3d/surface.c b/dlls/wined3d/surface.c
 diff --git a/dlls/wined3d/swapchain.c b/dlls/wined3d/swapchain.c
 --- a/dlls/wined3d/swapchain.c
 +++ b/dlls/wined3d/swapchain.c
-@@ -483,7 +483,11 @@ static void swapchain_gl_present(struct wined3d_swapchain *swapchain,
+@@ -471,7 +476,11 @@ static void swapchain_gl_present(struct wined3d_swapchain *swapchain,
+     if (swapchain->render_to_fbo)
          swapchain_blit(swapchain, context, src_rect, dst_rect);
-     }
  
 +#if !defined(STAGING_CSMT)
      if (swapchain->num_contexts > 1)
@@ -327,7 +327,6 @@ diff --git a/dlls/wined3d/swapchain.c b/dlls/wined3d/swapchain.c
          gl_info->gl_ops.gl.p_glFinish();
  
      /* call wglSwapBuffers through the gl table to avoid confusing the Steam overlay */
-diff --git a/dlls/wined3d/texture.c b/dlls/wined3d/texture.c
 --- a/dlls/wined3d/texture.c
 +++ b/dlls/wined3d/texture.c
 @@ -294,7 +294,11 @@ void wined3d_texture_get_memory(struct wined3d_texture *texture, unsigned int su
@@ -614,9 +613,9 @@ diff --git a/dlls/wined3d/wined3d_main.c b/dlls/wined3d/wined3d_main.c
 +#else  /* STAGING_CSMT */
 +    TRUE,           /* Multithreaded CS by default. */
 +#endif /* STAGING_CSMT */
+     FALSE,          /* explicit_gl_version */
      MAKEDWORD_VERSION(1, 0), /* Default to legacy OpenGL */
      TRUE,           /* Use of GLSL enabled by default */
-     ORM_FBO,        /* Use FBOs to do offscreen rendering */
 diff --git a/dlls/wined3d/wined3d_private.h b/dlls/wined3d/wined3d_private.h
 --- a/dlls/wined3d/wined3d_private.h
 +++ b/dlls/wined3d/wined3d_private.h
