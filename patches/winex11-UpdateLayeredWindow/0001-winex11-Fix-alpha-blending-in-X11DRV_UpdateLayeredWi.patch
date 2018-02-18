@@ -39,10 +39,10 @@ index eaf6dcfa3ed..5dec74acae7 100644
  
      XFlush( data->display );  /* make sure the window exists before we start painting to it */
  
-@@ -1647,7 +1644,7 @@ void CDECL X11DRV_SetWindowStyle( HWND hwnd, INT offset, STYLESTRUCT *style )
+@@ -1691,7 +1688,7 @@ void CDECL X11DRV_SetWindowStyle( HWND hwnd, INT offset, STYLESTRUCT *style )
      {
          data->layered = FALSE;
-         set_window_visual( data, &default_visual );
+         set_window_visual( data, &default_visual, FALSE );
 -        sync_window_opacity( data->display, data->whole_window, 0, 0, 0 );
 +        set_window_opacity( data->display, data->whole_window, 0xff );
          if (data->surface) set_surface_color_key( data->surface, CLR_INVALID );
