@@ -48,8 +48,8 @@ index eaf6dcfa3ed..5dec74acae7 100644
          if (data->surface) set_surface_color_key( data->surface, CLR_INVALID );
      }
  done:
-@@ -2538,7 +2535,7 @@ void CDECL X11DRV_SetLayeredWindowAttributes( HWND hwnd, COLORREF key, BYTE alph
-         set_window_visual( data, &default_visual );
+@@ -2570,7 +2567,7 @@ void CDECL X11DRV_SetLayeredWindowAttributes( HWND hwnd, COLORREF key, BYTE alph
+         set_window_visual( data, &default_visual, FALSE );
  
          if (data->whole_window)
 -            sync_window_opacity( data->display, data->whole_window, key, alpha, flags );
@@ -57,7 +57,7 @@ index eaf6dcfa3ed..5dec74acae7 100644
          if (data->surface)
              set_surface_color_key( data->surface, (flags & LWA_COLORKEY) ? key : CLR_INVALID );
  
-@@ -2562,7 +2559,7 @@ void CDECL X11DRV_SetLayeredWindowAttributes( HWND hwnd, COLORREF key, BYTE alph
+@@ -2594,7 +2591,7 @@ void CDECL X11DRV_SetLayeredWindowAttributes( HWND hwnd, COLORREF key, BYTE alph
          Window win = X11DRV_get_whole_window( hwnd );
          if (win)
          {
@@ -66,7 +66,7 @@ index eaf6dcfa3ed..5dec74acae7 100644
              if (flags & LWA_COLORKEY)
                  FIXME( "LWA_COLORKEY not supported on foreign process window %p\n", hwnd );
          }
-@@ -2578,7 +2575,6 @@ BOOL CDECL X11DRV_UpdateLayeredWindow( HWND hwnd, const UPDATELAYEREDWINDOWINFO
+@@ -2610,7 +2607,6 @@ BOOL CDECL X11DRV_UpdateLayeredWindow( HWND hwnd, const UPDATELAYEREDWINDOWINFO
  {
      struct window_surface *surface;
      struct x11drv_win_data *data;
@@ -74,7 +74,7 @@ index eaf6dcfa3ed..5dec74acae7 100644
      COLORREF color_key = (info->dwFlags & ULW_COLORKEY) ? info->crKey : CLR_INVALID;
      char buffer[FIELD_OFFSET( BITMAPINFO, bmiColors[256] )];
      BITMAPINFO *bmi = (BITMAPINFO *)buffer;
-@@ -2606,6 +2602,10 @@ BOOL CDECL X11DRV_UpdateLayeredWindow( HWND hwnd, const UPDATELAYEREDWINDOWINFO
+@@ -2638,6 +2634,10 @@ BOOL CDECL X11DRV_UpdateLayeredWindow( HWND hwnd, const UPDATELAYEREDWINDOWINFO
      }
      else set_surface_color_key( surface, color_key );
  
@@ -85,7 +85,7 @@ index eaf6dcfa3ed..5dec74acae7 100644
      if (surface) window_surface_add_ref( surface );
      release_win_data( data );
  
-@@ -2629,16 +2629,15 @@ BOOL CDECL X11DRV_UpdateLayeredWindow( HWND hwnd, const UPDATELAYEREDWINDOWINFO
+@@ -2661,16 +2661,16 @@ BOOL CDECL X11DRV_UpdateLayeredWindow( HWND hwnd, const UPDATELAYEREDWINDOWINFO
      {
          IntersectRect( &rect, &rect, info->prcDirty );
          memcpy( src_bits, dst_bits, bmi->bmiHeader.biSizeImage );
@@ -103,6 +103,7 @@ index eaf6dcfa3ed..5dec74acae7 100644
 +                      info->hdcSrc, src_rect.left, src_rect.top,
 +                      src_rect.right - src_rect.left, src_rect.bottom - src_rect.top,
 +                      SRCCOPY );
++
      if (ret)
      {
          memcpy( dst_bits, src_bits, bmi->bmiHeader.biSizeImage );
