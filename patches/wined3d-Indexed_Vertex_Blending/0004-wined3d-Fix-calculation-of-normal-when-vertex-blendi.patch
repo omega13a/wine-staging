@@ -136,7 +136,7 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      shader_addline(buffer, "uniform mat4 ffp_texture_matrix[%u];\n", MAX_TEXTURES);
  
      shader_addline(buffer, "uniform struct\n{\n");
-@@ -8895,15 +8920,11 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
+@@ -8895,14 +8920,10 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
      shader_addline(buffer, "vec3 normal = vec3(0.0);\n");
      if (settings->normal)
      {
@@ -145,18 +145,15 @@ index 3e84ad0d717..2aa0d0db0a4 100644
 -            shader_addline(buffer, "normal = ffp_normal_matrix * ffp_attrib_normal;\n");
 -        }
 -        else
--        {
++        for (i = 0; i < settings->vertexblends + 1; ++i)
+         {
 -            for (i = 0; i < settings->vertexblends + 1; ++i)
 -                shader_addline(buffer, "normal += ffp_attrib_blendweight[%u] * (mat3(ffp_modelview_matrix[%u]) * ffp_attrib_normal);\n", i, i);
--        }
-+        for (i = 0; i < settings->vertexblends + 1; ++i)
-+         {
 +            sprintf(var, settings->vb_indices ? "int(ffp_attrib_blendindices[%u] + 0.1)" : "%u", i);
 +            shader_addline(buffer, "normal += ffp_attrib_blendweight[%u] * (ffp_normal_matrix[%s] * ffp_attrib_normal);\n", i, var);
-+         }
+         }
  
          if (settings->normalize)
-             shader_addline(buffer, "normal = normalize(normal);\n");
 @@ -9780,8 +9780,13 @@ static void shader_glsl_init_vs_uniform_locations(const struct wined3d_gl_info *
          string_buffer_sprintf(name, "ffp_modelview_matrix[%u]", i);
          vs->modelview_matrix_location[i] = GL_EXTCALL(glGetUniformLocation(program_id, name->buffer));
