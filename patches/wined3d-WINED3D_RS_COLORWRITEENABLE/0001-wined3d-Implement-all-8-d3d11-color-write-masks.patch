@@ -75,7 +75,7 @@ diff --git a/dlls/d3d11/state.c b/dlls/d3d11/state.c
 index b7c9264df47..455123f5bb4 100644
 --- a/dlls/d3d11/state.c
 +++ b/dlls/d3d11/state.c
-@@ -331,10 +331,6 @@ HRESULT d3d_blend_state_create(struct d3d_device *device, const D3D11_BLEND_DESC
+@@ -335,10 +335,6 @@ HRESULT d3d_blend_state_create(struct d3d_device *device, const D3D11_BLEND_DESC
          tmp_desc.RenderTarget[i].DestBlendAlpha = desc->RenderTarget[j].DestBlendAlpha;
          tmp_desc.RenderTarget[i].BlendOpAlpha = desc->RenderTarget[j].BlendOpAlpha;
          tmp_desc.RenderTarget[i].RenderTargetWriteMask = desc->RenderTarget[j].RenderTargetWriteMask;
@@ -85,7 +85,7 @@ index b7c9264df47..455123f5bb4 100644
 -                    tmp_desc.RenderTarget[i].RenderTargetWriteMask, i);
      }
  
-     /* glSampleCoverage() */
+     /* glEnableIndexedEXT(GL_BLEND, ...) */
 diff --git a/dlls/wined3d/context.c b/dlls/wined3d/context.c
 index a2c0ba4080c..2a9036cabff 100644
 --- a/dlls/wined3d/context.c
@@ -341,16 +341,16 @@ diff --git a/include/wine/wined3d.h b/include/wine/wined3d.h
 index 5e9e45942be..81faf2d4356 100644
 --- a/include/wine/wined3d.h
 +++ b/include/wine/wined3d.h
-@@ -383,8 +383,20 @@ enum wined3d_render_state
+@@ -385,8 +387,20 @@ enum wined3d_render_state
+     WINED3D_RS_SRCBLENDALPHA                = 207,
+     WINED3D_RS_DESTBLENDALPHA               = 208,
      WINED3D_RS_BLENDOPALPHA                 = 209,
-     WINED3D_RS_DEPTHCLIP                    = 210,
-     WINED3D_RS_DEPTHBIASCLAMP               = 211,
 +    WINED3D_RS_COLORWRITEENABLE4            = 212,
 +    WINED3D_RS_COLORWRITEENABLE5            = 213,
 +    WINED3D_RS_COLORWRITEENABLE6            = 214,
 +    WINED3D_RS_COLORWRITEENABLE7            = 215,
  };
--#define WINEHIGHEST_RENDER_STATE                                WINED3D_RS_DEPTHBIASCLAMP
+-#define WINEHIGHEST_RENDER_STATE                                WINED3D_RS_BLENDOPALPHA
 +#define WINEHIGHEST_RENDER_STATE                                WINED3D_RS_COLORWRITEENABLE7
 +
 +static inline enum wined3d_render_state WINED3D_RS_COLORWRITE(int index)
