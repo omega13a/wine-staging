@@ -151,3 +151,4 @@ index 6549a71fc0..6e51612380 100644
                                LARGE_INTEGER *kernel, LARGE_INTEGER *user) DECLSPEC_HIDDEN;
 -- 
 2.12.2
+
