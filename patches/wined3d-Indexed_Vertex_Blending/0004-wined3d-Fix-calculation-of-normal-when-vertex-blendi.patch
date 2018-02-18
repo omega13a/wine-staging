@@ -102,7 +102,7 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      DWORD update_mask;
  
      struct glsl_shader_prog_link *prog = ctx_data->glsl_program;
-@@ -1811,14 +1811,16 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
+@@ -1811,7 +1811,9 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
          GL_EXTCALL(glUniformMatrix4fv(prog->vs.modelview_matrix_location[0], 1, FALSE, &mat._11));
          checkGLcall("glUniformMatrix4fv");
  
@@ -113,14 +113,6 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      }
  
      if (update_mask & WINED3D_SHADER_CONST_FFP_VERTEXBLEND)
-     {
-         struct wined3d_matrix mat;
- 
--        for (i = 1; i < MAX_VERTEX_BLENDS; ++i)
-+        for (i = 1; i < MAX_VERTEX_INDEX_BLENDS; ++i)
-         {
-             if (prog->vs.modelview_matrix_location[i] == -1)
-                 break;
 @@ -1826,6 +1820,10 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
              get_modelview_matrix(context, state, i, &mat);
              GL_EXTCALL(glUniformMatrix4fv(prog->vs.modelview_matrix_location[i], 1, FALSE, &mat._11));
