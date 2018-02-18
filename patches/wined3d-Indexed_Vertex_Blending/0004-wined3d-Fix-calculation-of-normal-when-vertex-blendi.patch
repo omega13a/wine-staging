@@ -136,7 +136,7 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      shader_addline(buffer, "uniform mat4 ffp_texture_matrix[%u];\n", MAX_TEXTURES);
  
      shader_addline(buffer, "uniform struct\n{\n");
-@@ -8895,14 +8920,10 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
+@@ -8895,14 +8895,10 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
      shader_addline(buffer, "vec3 normal = vec3(0.0);\n");
      if (settings->normal)
      {
