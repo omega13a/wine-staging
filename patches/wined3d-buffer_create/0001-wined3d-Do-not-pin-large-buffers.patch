@@ -19,9 +19,9 @@ index c584147717b..4b53c42dbfe 100644
      HRESULT hr;
  
      TRACE("device %p, desc %p, data %p, parent %p, parent_ops %p, buffer %p.\n",
-@@ -1465,8 +1466,21 @@ HRESULT CDECL wined3d_buffer_create(struct wined3d_device *device, const struct
- 
-     FIXME("Ignoring access flags (pool).\n");
+@@ -1427,8 +1454,21 @@ HRESULT CDECL wined3d_buffer_create(struct wined3d_device *device, const struct
+     if (!(object = heap_alloc_zero(sizeof(*object))))
+         return E_OUTOFMEMORY;
  
 +    /* Some applications map the whole buffer even if they
 +     * only update a small portion of it. If we pin such a
@@ -37,11 +37,11 @@ index c584147717b..4b53c42dbfe 100644
 +        pool = WINED3D_POOL_MANAGED;
 +
      if (FAILED(hr = buffer_init(object, device, desc->byte_width, desc->usage, WINED3DFMT_UNKNOWN,
--            WINED3D_POOL_MANAGED, desc->bind_flags, data, parent, parent_ops)))
+-            desc->access, desc->bind_flags, data, parent, parent_ops)))
 +            pool, desc->bind_flags, data, parent, parent_ops)))
      {
          WARN("Failed to initialize buffer, hr %#x.\n", hr);
-         HeapFree(GetProcessHeap(), 0, object);
+         heap_free(object);
 -- 
 2.11.0
 
