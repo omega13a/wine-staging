@@ -35,8 +35,8 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      GLint texture_matrix_location[MAX_TEXTURES];
      GLint material_ambient_location;
      GLint material_diffuse_location;
-@@ -1496,33 +1496,6 @@ static BOOL invert_matrix(struct wined3d_matrix *out, struct wined3d_matrix *m)
-     return TRUE;
+@@ -1523,33 +1523,6 @@ static void transpose_matrix(struct wined3d_matrix *out, const struct wined3d_ma
+     *out = temp;
  }
  
 -static void shader_glsl_ffp_vertex_normalmatrix_uniform(const struct wined3d_context *context,
@@ -69,7 +69,7 @@ index 3e84ad0d717..2aa0d0db0a4 100644
  static void shader_glsl_ffp_vertex_texmatrix_uniform(const struct wined3d_context *context,
          const struct wined3d_state *state, unsigned int tex, struct glsl_shader_prog_link *prog)
  {
-@@ -1715,6 +1688,23 @@ static void shader_glsl_load_color_key_constant(const struct glsl_ps_program *ps
+@@ -1747,6 +1720,24 @@ static void shader_glsl_load_color_key_constant(const struct glsl_ps_program *ps
      GL_EXTCALL(glUniform4fv(ps->color_key_location, 2, &float_key[0].r));
  }
  
@@ -90,10 +90,11 @@ index 3e84ad0d717..2aa0d0db0a4 100644
 +            normal[i * 3 + j] = (&mat->_11)[j * 4 + i];
 +}
 +
++
  /* Context activation is done by the caller (state handler). */
  static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context *context,
          const struct wined3d_state *state)
-@@ -1725,6 +1715,7 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
+@@ -1757,6 +1748,7 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
      const struct wined3d_gl_info *gl_info = context->gl_info;
      struct shader_glsl_priv *priv = shader_priv;
      float position_fixup[4];
@@ -101,7 +102,7 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      DWORD update_mask;
  
      struct glsl_shader_prog_link *prog = ctx_data->glsl_program;
-@@ -1779,7 +1770,9 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
+@@ -1811,14 +1803,16 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
          GL_EXTCALL(glUniformMatrix4fv(prog->vs.modelview_matrix_location[0], 1, FALSE, &mat._11));
          checkGLcall("glUniformMatrix4fv");
  
@@ -112,7 +113,15 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      }
  
      if (update_mask & WINED3D_SHADER_CONST_FFP_VERTEXBLEND)
-@@ -1794,6 +1787,10 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
+     {
+         struct wined3d_matrix mat;
+ 
+-        for (i = 1; i < MAX_VERTEX_BLENDS; ++i)
++        for (i = 1; i < MAX_VERTEX_INDEX_BLENDS; ++i)
+         {
+             if (prog->vs.modelview_matrix_location[i] == -1)
+                 break;
+@@ -1826,6 +1820,10 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
              get_modelview_matrix(context, state, i, &mat);
              GL_EXTCALL(glUniformMatrix4fv(prog->vs.modelview_matrix_location[i], 1, FALSE, &mat._11));
              checkGLcall("glUniformMatrix4fv");
@@ -123,17 +132,19 @@ index 3e84ad0d717..2aa0d0db0a4 100644
          }
      }
  
-@@ -8551,8 +8548,8 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
+@@ -8786,9 +8806,9 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
+     }
      shader_addline(buffer, "\n");
  
-     shader_addline(buffer, "uniform mat4 ffp_modelview_matrix[%u];\n", MAX_VERTEX_INDEX_BLENDS);
+-    shader_addline(buffer, "uniform mat4 ffp_modelview_matrix[%u];\n", MAX_VERTEX_BLENDS);
++    shader_addline(buffer, "uniform mat4 ffp_modelview_matrix[%u];\n", MAX_VERTEX_INDEX_BLENDS);
 +    shader_addline(buffer, "uniform mat3 ffp_normal_matrix[%u];\n", MAX_VERTEX_INDEX_BLENDS);
      shader_addline(buffer, "uniform mat4 ffp_projection_matrix;\n");
 -    shader_addline(buffer, "uniform mat3 ffp_normal_matrix;\n");
      shader_addline(buffer, "uniform mat4 ffp_texture_matrix[%u];\n", MAX_TEXTURES);
  
      shader_addline(buffer, "uniform struct\n{\n");
-@@ -8662,17 +8659,10 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
+@@ -8895,14 +8918,10 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
      shader_addline(buffer, "vec3 normal = vec3(0.0);\n");
      if (settings->normal)
      {
@@ -145,26 +156,25 @@ index 3e84ad0d717..2aa0d0db0a4 100644
 +        for (i = 0; i < settings->vertexblends + 1; ++i)
          {
 -            for (i = 0; i < settings->vertexblends + 1; ++i)
--            {
--                sprintf(var, settings->vb_indices ? "int(ffp_attrib_blendindices[%u] + 0.1)" : "%u", i);
--                shader_addline(buffer, "normal += ffp_attrib_blendweight[%u] * (mat3(ffp_modelview_matrix[%s]) * ffp_attrib_normal);\n", i, var);
--            }
+-                shader_addline(buffer, "normal += ffp_attrib_blendweight[%u] * (mat3(ffp_modelview_matrix[%u]) * ffp_attrib_normal);\n", i, i);
 +            sprintf(var, settings->vb_indices ? "int(ffp_attrib_blendindices[%u] + 0.1)" : "%u", i);
 +            shader_addline(buffer, "normal += ffp_attrib_blendweight[%u] * (ffp_normal_matrix[%s] * ffp_attrib_normal);\n", i, var);
          }
  
          if (settings->normalize)
-@@ -9550,8 +9540,12 @@ static void shader_glsl_init_vs_uniform_locations(const struct wined3d_gl_info *
+@@ -9780,8 +9780,13 @@ static void shader_glsl_init_vs_uniform_locations(const struct wined3d_gl_info *
          string_buffer_sprintf(name, "ffp_modelview_matrix[%u]", i);
          vs->modelview_matrix_location[i] = GL_EXTCALL(glGetUniformLocation(program_id, name->buffer));
      }
+-    vs->projection_matrix_location = GL_EXTCALL(glGetUniformLocation(program_id, "ffp_projection_matrix"));
+-    vs->normal_matrix_location = GL_EXTCALL(glGetUniformLocation(program_id, "ffp_normal_matrix"));
++
 +    for (i = 0; i < MAX_VERTEX_INDEX_BLENDS; ++i)
 +    {
 +        string_buffer_sprintf(name, "ffp_normal_matrix[%u]", i);
 +        vs->normal_matrix_location[i] = GL_EXTCALL(glGetUniformLocation(program_id, name->buffer));
-+    }
-     vs->projection_matrix_location = GL_EXTCALL(glGetUniformLocation(program_id, "ffp_projection_matrix"));
--    vs->normal_matrix_location = GL_EXTCALL(glGetUniformLocation(program_id, "ffp_normal_matrix"));
++    }    vs->projection_matrix_location = GL_EXTCALL(glGetUniformLocation(program_id, "ffp_projection_matrix"));
++
      for (i = 0; i < MAX_TEXTURES; ++i)
      {
          string_buffer_sprintf(name, "ffp_texture_matrix[%u]", i);
