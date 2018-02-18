@@ -18,20 +18,20 @@ Subject: wined3d: Implement all 8 d3d11 color write masks.
  11 files changed, 72 insertions(+), 70 deletions(-)
 
 diff --git a/dlls/d3d11/device.c b/dlls/d3d11/device.c
-index 405a678505f..fd0afa349f9 100644
+index 25308c2980..b380301e18 100644
 --- a/dlls/d3d11/device.c
 +++ b/dlls/d3d11/device.c
-@@ -687,6 +687,7 @@ static void STDMETHODCALLTYPE d3d11_immediate_context_OMSetBlendState(ID3D11Devi
-     struct d3d_device *device = device_from_immediate_ID3D11DeviceContext(iface);
+@@ -688,6 +688,7 @@ static void STDMETHODCALLTYPE d3d11_immediate_context_OMSetBlendState(ID3D11Devi
      static const float default_blend_factor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+     struct d3d_blend_state *blend_state_impl;
      const D3D11_BLEND_DESC *desc;
 +    int i;
  
      TRACE("iface %p, blend_state %p, blend_factor %s, sample_mask 0x%08x.\n",
              iface, blend_state, debug_float4(blend_factor), sample_mask);
-@@ -700,14 +701,11 @@ static void STDMETHODCALLTYPE d3d11_immediate_context_OMSetBlendState(ID3D11Devi
-     if (!(device->blend_state = unsafe_impl_from_ID3D11BlendState(blend_state)))
+@@ -702,14 +703,11 @@ static void STDMETHODCALLTYPE d3d11_immediate_context_OMSetBlendState(ID3D11Devi
      {
+         wined3d_device_set_blend_state(device->wined3d_device, NULL);
          wined3d_device_set_render_state(device->wined3d_device, WINED3D_RS_ALPHABLENDENABLE, FALSE);
 -        wined3d_device_set_render_state(device->wined3d_device,
 -                WINED3D_RS_COLORWRITEENABLE, D3D11_COLOR_WRITE_ENABLE_ALL);
@@ -49,7 +49,7 @@ index 405a678505f..fd0afa349f9 100644
          wined3d_mutex_unlock();
          return;
      }
-@@ -734,14 +732,13 @@ static void STDMETHODCALLTYPE d3d11_immediate_context_OMSetBlendState(ID3D11Devi
+@@ -737,14 +735,13 @@ static void STDMETHODCALLTYPE d3d11_immediate_context_OMSetBlendState(ID3D11Devi
                  || d->DestBlendAlpha == D3D11_BLEND_BLEND_FACTOR || d->DestBlendAlpha == D3D11_BLEND_INV_BLEND_FACTOR))
              FIXME("Ignoring blend factor %s.\n", debug_float4(blend_factor));
      }
