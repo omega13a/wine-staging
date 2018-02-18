@@ -102,7 +102,7 @@ index 3e84ad0d717..2aa0d0db0a4 100644
      DWORD update_mask;
  
      struct glsl_shader_prog_link *prog = ctx_data->glsl_program;
-@@ -1811,14 +1803,16 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
+@@ -1811,14 +1811,16 @@ static void shader_glsl_load_constants(void *shader_priv, struct wined3d_context
          GL_EXTCALL(glUniformMatrix4fv(prog->vs.modelview_matrix_location[0], 1, FALSE, &mat._11));
          checkGLcall("glUniformMatrix4fv");
  
