@@ -33,16 +33,16 @@ index e953e9ad215..d81387291f1 100644
      }
      checkGLcall("glBufferSubData");
  }
-@@ -599,7 +599,7 @@ static void buffer_conversion_upload(struct wined3d_buffer *buffer, struct wined
+@@ -600,7 +600,7 @@ static void buffer_conversion_upload(struct wined3d_buffer *buffer, struct wined
          }
      }
  
 -    wined3d_buffer_upload_ranges(buffer, context, data, 0, buffer->modified_areas, buffer->maps);
 +    wined3d_buffer_upload_ranges(buffer, context, data, buffer->modified_areas, buffer->maps);
  
-     HeapFree(GetProcessHeap(), 0, data);
+     heap_free(data);
  }
-@@ -683,7 +683,7 @@ BOOL wined3d_buffer_load_location(struct wined3d_buffer *buffer,
+@@ -684,7 +684,7 @@ BOOL wined3d_buffer_load_location(struct wined3d_buffer *buffer,
          case WINED3D_LOCATION_BUFFER:
              if (!buffer->conversion_map)
                  wined3d_buffer_upload_ranges(buffer, context, buffer->resource.heap_memory,
@@ -51,7 +51,7 @@ index e953e9ad215..d81387291f1 100644
              else
                  buffer_conversion_upload(buffer, context);
              break;
-@@ -1215,23 +1215,31 @@ void wined3d_buffer_copy(struct wined3d_buffer *dst_buffer, unsigned int dst_off
+@@ -1216,23 +1216,31 @@ void wined3d_buffer_copy(struct wined3d_buffer *dst_buffer, unsigned int dst_off
      wined3d_buffer_invalidate_range(dst_buffer, ~dst_location, dst_offset, size);
  }
  
@@ -94,17 +94,15 @@ diff --git a/dlls/wined3d/cs.c b/dlls/wined3d/cs.c
 index a76598ff4ca..f521475d3af 100644
 --- a/dlls/wined3d/cs.c
 +++ b/dlls/wined3d/cs.c
-@@ -2107,18 +2107,11 @@ static void wined3d_cs_exec_update_sub_resource(struct wined3d_cs *cs, const voi
-     if (op->resource->type == WINED3D_RTYPE_BUFFER)
+@@ -2208,15 +2220,11 @@ static void wined3d_cs_exec_update_sub_resource(struct wined3d_cs *cs, const voi
+     if (resource->type == WINED3D_RTYPE_BUFFER)
      {
-         struct wined3d_buffer *buffer = buffer_from_resource(op->resource);
+         struct wined3d_buffer *buffer = buffer_from_resource(resource);
 +        HRESULT hr;
  
--        context = context_acquire(op->resource->device, NULL, 0);
 -        if (!wined3d_buffer_load_location(buffer, context, WINED3D_LOCATION_BUFFER))
 -        {
 -            ERR("Failed to load buffer location.\n");
--            context_release(context);
 -            goto done;
 -        }
 +        if (FAILED(hr = wined3d_buffer_upload_data(buffer, box, op->data.data)))
@@ -112,7 +110,6 @@ index a76598ff4ca..f521475d3af 100644
  
 -        wined3d_buffer_upload_data(buffer, context, box, op->data.data);
 -        wined3d_buffer_invalidate_location(buffer, ~WINED3D_LOCATION_BUFFER);
--        context_release(context);
          goto done;
      }
  
