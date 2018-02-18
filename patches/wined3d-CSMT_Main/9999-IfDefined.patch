@@ -112,9 +112,9 @@ diff --git a/dlls/wined3d/cs.c b/dlls/wined3d/cs.c
      cs->ops->finish(cs, WINED3D_CS_QUEUE_MAP);
  }
  
-@@ -2640,6 +2692,13 @@ static void (* const wined3d_cs_op_handlers[])(struct wined3d_cs *cs, const void
-     /* WINED3D_CS_OP_GENERATE_MIPS               */ wined3d_cs_exec_generate_mips,
- };
+@@ -2475,6 +2637,14 @@ static void *wined3d_cs_st_require_space(struct wined3d_cs *cs, size_t size, enu
+     return (BYTE *)cs->data + cs->start;
+ }
  
 +#if defined(STAGING_CSMT)
 +static BOOL wined3d_cs_st_check_space(struct wined3d_cs *cs, size_t size, enum wined3d_cs_queue_id queue_id)
@@ -123,9 +123,10 @@ diff --git a/dlls/wined3d/cs.c b/dlls/wined3d/cs.c
 +}
 +
 +#endif /* STAGING_CSMT */
- static void *wined3d_cs_st_require_space(struct wined3d_cs *cs, size_t size, enum wined3d_cs_queue_id queue_id)
++
+ static void wined3d_cs_st_submit(struct wined3d_cs *cs, enum wined3d_cs_queue_id queue_id)
  {
-     if (size > (cs->data_size - cs->end))
+     enum wined3d_cs_op opcode;
 @@ -2693,6 +2752,9 @@ static void wined3d_cs_st_finish(struct wined3d_cs *cs, enum wined3d_cs_queue_id
  
  static const struct wined3d_cs_ops wined3d_cs_st_ops =
