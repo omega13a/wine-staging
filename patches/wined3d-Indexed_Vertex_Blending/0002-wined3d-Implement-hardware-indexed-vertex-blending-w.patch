@@ -64,15 +64,6 @@ index 1aa23ee33ad..3e84ad0d717 100644
  
      string_buffer_clear(buffer);
  
-@@ -8550,7 +8550,7 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
-     }
-     shader_addline(buffer, "\n");
- 
--    shader_addline(buffer, "uniform mat4 ffp_modelview_matrix[%u];\n", MAX_VERTEX_BLENDS);
-+    shader_addline(buffer, "uniform mat4 ffp_modelview_matrix[%u];\n", MAX_VERTEX_INDEX_BLENDS);
-     shader_addline(buffer, "uniform mat4 ffp_projection_matrix;\n");
-     shader_addline(buffer, "uniform mat3 ffp_normal_matrix;\n");
-     shader_addline(buffer, "uniform mat4 ffp_texture_matrix[%u];\n", MAX_TEXTURES);
 @@ -8642,7 +8642,10 @@ static GLuint shader_glsl_generate_ffp_vertex_shader(struct shader_glsl_priv *pr
  
          shader_addline(buffer, "vec4 ec_pos = vec4(0.0);\n");
